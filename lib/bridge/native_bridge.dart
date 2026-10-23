@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import '../models/app_rule.dart';
-import '../models/app_settings.dart';
+import '../models/goal.dart';
 import 'messages.g.dart';
 
 class ListedApp {
@@ -60,11 +60,17 @@ class NativeBridge {
 
   Future<void> unlock(String ruleId) => _api.unlockApp(ruleId);
 
-  Future<void> saveSettings(AppSettings settings) {
-    return _api.saveSettings(
-      NativeSettings(
-        defaultLimitMinutes: settings.defaultLimitMinutes,
-      ),
-    );
-  }
+  Future<List<Goal>> goals() async => _goals(await _api.getGoals());
+
+  Future<List<Goal>> addGoal(String text) async => _goals(await _api.addGoal(text));
+
+  Future<List<Goal>> setGoalDone(String id, bool done) async =>
+      _goals(await _api.setGoalDone(id, done));
+
+  Future<List<Goal>> deleteGoal(String id) async =>
+      _goals(await _api.deleteGoal(id));
+
+  static List<Goal> _goals(List<NativeGoal> goals) => goals
+      .map((goal) => Goal(id: goal.id, text: goal.text, done: goal.done))
+      .toList();
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
@@ -5,6 +6,7 @@ import '../bridge/messages.g.dart';
 import '../bridge/native_bridge.dart';
 import '../models/app_rule.dart';
 import '../models/app_settings.dart';
+import '../models/goal.dart';
 import '../persistence/local_store.dart';
 
 class AppController extends ChangeNotifier {
@@ -28,6 +30,9 @@ class AppController extends ChangeNotifier {
 
   /// Today's interruptions keyed by rule id.
   Map<String, int> interruptionsByRule = const {};
+
+  /// Today's goals, shown on the home screen and with every interruption.
+  List<Goal> goals = const [];
   bool busy = false;
   String? errorMessage;
 
@@ -73,6 +78,8 @@ class AppController extends ChangeNotifier {
   Future<void> refreshNative() async {
     try {
       permissions = await _bridge.status();
+      // Goals can be ticked off from a notification while the app is closed.
+      goals = await _bridge.goals();
       final status = await _bridge.monitoring();
       interruptionsToday = status.interruptionsToday;
       interruptionsByRule = status.interruptionsByRule;
@@ -169,15 +176,27 @@ class AppController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateSettings({
-    int? defaultLimitMinutes,
-  }) async {
+  /// The light/dark toggle. Before the first tap the app follows the phone, so the toggle
+  /// flips whichever look is on screen right now.
+  Future<void> toggleTheme(Brightness current) async {
     settings = settings.copyWith(
-      defaultLimitMinutes: defaultLimitMinutes,
+      themeMode: current == Brightness.dark ? ThemeMode.light : ThemeMode.dark,
     );
+    notifyListeners();
     await _store.saveSettings(settings);
+  }
+
+  Future<void> addGoal(String text) => _updateGoals(() => _bridge.addGoal(text));
+
+  Future<void> setGoalDone(Goal goal, bool done) =>
+      _updateGoals(() => _bridge.setGoalDone(goal.id, done));
+
+  Future<void> deleteGoal(Goal goal) => _updateGoals(() => _bridge.deleteGoal(goal.id));
+
+  Future<void> _updateGoals(Future<List<Goal>> Function() change) async {
     try {
-      await _bridge.saveSettings(settings);
+      goals = await change();
+      errorMessage = null;
     } catch (error) {
       errorMessage = _describe(error);
     }
@@ -185,7 +204,6 @@ class AppController extends ChangeNotifier {
   }
 
   Future<void> _syncAllRules() async {
-    await _bridge.saveSettings(settings);
     for (final rule in rules) {
       await _bridge.upsert(rule);
     }

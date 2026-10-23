@@ -143,9 +143,16 @@ class MainActivity : FlutterActivity() {
 
         override fun unlockApp(ruleId: String) = store.unlock(ruleId)
 
-        override fun saveSettings(settings: NativeSettings) {
-            // Nothing native-side depends on app-wide settings any more; unlock time is per rule.
-        }
+        override fun getGoals() = store.goals().map(::native)
+
+        override fun addGoal(text: String) = store.addGoal(text).map(::native)
+
+        override fun setGoalDone(id: String, done: Boolean) =
+            store.setGoalDone(id, done).map(::native)
+
+        override fun deleteGoal(id: String) = store.deleteGoal(id).map(::native)
+
+        private fun native(goal: StoredGoal) = NativeGoal(goal.id, goal.text, goal.done)
     }
 
     companion object {

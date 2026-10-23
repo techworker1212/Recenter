@@ -33,6 +33,10 @@
 		36533BCC1824731A09A816CE /* RuleStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3177AA445B0541CC43DC994B /* RuleStore.swift */; };
 		DCE0FA74130553D16E23F127 /* RuleScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2838901BD9F8E5A0EC23C8F /* RuleScheduler.swift */; };
 		68850FC1675CD02A7AB4B4C8 /* ShieldAction.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 28617FA409180973B4138B6F /* ShieldAction.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		E4CFF2B187944CF7A3343CB5 /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
+		27D124034D79E9A39D49EE26 /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
+		D75161A823CB332884F247BA /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
+		11CDC062897689AAA86758E7 /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -128,6 +132,7 @@
 		F0CCDF49B686A83E07E02BF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5BBDD99C850A430DA1C70F3F /* ShieldAction.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShieldAction.entitlements; sourceTree = "<group>"; };
 		28617FA409180973B4138B6F /* ShieldAction.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldAction.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		F23159B91277DAEB99F217AC /* Goals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goals.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,6 +239,7 @@
 			children = (
 				3177AA445B0541CC43DC994B /* RuleStore.swift */,
 				C2838901BD9F8E5A0EC23C8F /* RuleScheduler.swift */,
+				F23159B91277DAEB99F217AC /* Goals.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -508,6 +514,7 @@
 				DE4F4158757D929578CDE9B7 /* ActivityPicker.swift in Sources */,
 				03AB1586A2C5004EFC1DE43B /* RuleStore.swift in Sources */,
 				ED41DB2035A6525A90CFD917 /* RuleScheduler.swift in Sources */,
+				E4CFF2B187944CF7A3343CB5 /* Goals.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -518,6 +525,7 @@
 				074A0610A36AEBA05E8294F1 /* DeviceActivityMonitorExtension.swift in Sources */,
 				8F2A7DF8A17579C0064D8D6F /* RuleStore.swift in Sources */,
 				D8267B59900074F81A9560FC /* RuleScheduler.swift in Sources */,
+				27D124034D79E9A39D49EE26 /* Goals.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -528,6 +536,7 @@
 				03BBE187653E962588A54FC8 /* ShieldConfigurationExtension.swift in Sources */,
 				0992389C0DBF8EBFAA4411B1 /* RuleStore.swift in Sources */,
 				7F3C12A5521D50AAE653CAA0 /* RuleScheduler.swift in Sources */,
+				D75161A823CB332884F247BA /* Goals.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,6 +547,7 @@
 				D479425AE65BCDFF1A2F4A40 /* ShieldActionExtension.swift in Sources */,
 				36533BCC1824731A09A816CE /* RuleStore.swift in Sources */,
 				DCE0FA74130553D16E23F127 /* RuleScheduler.swift in Sources */,
+				11CDC062897689AAA86758E7 /* Goals.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

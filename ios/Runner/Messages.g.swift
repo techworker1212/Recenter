@@ -369,34 +369,47 @@ struct MonitoringStatus: Hashable {
   }
 }
 
+/// A goal for today. Goals live natively so notification actions can tick them off
+/// while Flutter isn't running.
+///
 /// Generated class from Pigeon that represents data sent in messages.
-struct NativeSettings: Hashable {
-  var defaultLimitMinutes: Int64
+struct NativeGoal: Hashable {
+  var id: String
+  var text: String
+  var done: Bool
 
 
   // swift-format-ignore: AlwaysUseLowerCamelCase
-  static func fromList(_ pigeonVar_list: [Any?]) -> NativeSettings? {
-    let defaultLimitMinutes = pigeonVar_list[0] as! Int64
+  static func fromList(_ pigeonVar_list: [Any?]) -> NativeGoal? {
+    let id = pigeonVar_list[0] as! String
+    let text = pigeonVar_list[1] as! String
+    let done = pigeonVar_list[2] as! Bool
 
-    return NativeSettings(
-      defaultLimitMinutes: defaultLimitMinutes
+    return NativeGoal(
+      id: id,
+      text: text,
+      done: done
     )
   }
   func toList() -> [Any?] {
     return [
-      defaultLimitMinutes
+      id,
+      text,
+      done,
     ]
   }
-  static func == (lhs: NativeSettings, rhs: NativeSettings) -> Bool {
+  static func == (lhs: NativeGoal, rhs: NativeGoal) -> Bool {
     if Swift.type(of: lhs) != Swift.type(of: rhs) {
       return false
     }
-    return deepEqualsMessages(lhs.defaultLimitMinutes, rhs.defaultLimitMinutes)
+    return deepEqualsMessages(lhs.id, rhs.id) && deepEqualsMessages(lhs.text, rhs.text) && deepEqualsMessages(lhs.done, rhs.done)
   }
 
   func hash(into hasher: inout Hasher) {
-    hasher.combine("NativeSettings")
-    deepHashMessages(value: defaultLimitMinutes, hasher: &hasher)
+    hasher.combine("NativeGoal")
+    deepHashMessages(value: id, hasher: &hasher)
+    deepHashMessages(value: text, hasher: &hasher)
+    deepHashMessages(value: done, hasher: &hasher)
   }
 }
 
@@ -412,7 +425,7 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
     case 132:
       return MonitoringStatus.fromList(self.readValue() as! [Any?])
     case 133:
-      return NativeSettings.fromList(self.readValue() as! [Any?])
+      return NativeGoal.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -433,7 +446,7 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
     } else if let value = value as? MonitoringStatus {
       super.writeByte(132)
       super.writeValue(value.toList())
-    } else if let value = value as? NativeSettings {
+    } else if let value = value as? NativeGoal {
       super.writeByte(133)
       super.writeValue(value.toList())
     } else {
@@ -469,7 +482,11 @@ protocol RecenterHostApi {
   func listInstalledApps() throws -> [InstalledApp]
   func pickIosActivity(completion: @escaping (Result<String, Error>) -> Void)
   func unlockApp(ruleId: String) throws
-  func saveSettings(settings: NativeSettings) throws
+  /// Today's goals. A new day starts with an empty list.
+  func getGoals() throws -> [NativeGoal]
+  func addGoal(text: String) throws -> [NativeGoal]
+  func setGoalDone(id: String, done: Bool) throws -> [NativeGoal]
+  func deleteGoal(id: String) throws -> [NativeGoal]
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -620,20 +637,65 @@ class RecenterHostApiSetup {
     } else {
       unlockAppChannel.setMessageHandler(nil)
     }
-    let saveSettingsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.saveSettings\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    /// Today's goals. A new day starts with an empty list.
+    let getGoalsChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.getGoals\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
-      saveSettingsChannel.setMessageHandler { message, reply in
-        let args = message as! [Any?]
-        let settingsArg = args[0] as! NativeSettings
+      getGoalsChannel.setMessageHandler { _, reply in
         do {
-          try api.saveSettings(settings: settingsArg)
-          reply(wrapResult(nil))
+          let result = try api.getGoals()
+          reply(wrapResult(result))
         } catch {
           reply(wrapError(error))
         }
       }
     } else {
-      saveSettingsChannel.setMessageHandler(nil)
+      getGoalsChannel.setMessageHandler(nil)
+    }
+    let addGoalChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.addGoal\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      addGoalChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let textArg = args[0] as! String
+        do {
+          let result = try api.addGoal(text: textArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      addGoalChannel.setMessageHandler(nil)
+    }
+    let setGoalDoneChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.setGoalDone\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setGoalDoneChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let idArg = args[0] as! String
+        let doneArg = args[1] as! Bool
+        do {
+          let result = try api.setGoalDone(id: idArg, done: doneArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setGoalDoneChannel.setMessageHandler(nil)
+    }
+    let deleteGoalChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.deleteGoal\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      deleteGoalChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let idArg = args[0] as! String
+        do {
+          let result = try api.deleteGoal(id: idArg)
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      deleteGoalChannel.setMessageHandler(nil)
     }
   }
 }

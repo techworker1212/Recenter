@@ -30,7 +30,8 @@ Nothing here has been submitted. This is the checklist for when you're ready.
 
 **How limits behave on iOS:** DeviceActivity counts **total use since the window started** (from
 when monitoring was armed until midnight, then daily). It doesn't count one continuous session the
-way Android does. After an unlock, the next warning comes after `cooldown` minutes of further use.
+way Android does. After an unlock, the next warning comes after that rule's unlock minutes of
+further use. Blocks, unlocks, interruption counts and goals all reset at midnight.
 
 ## Google Play
 

@@ -70,12 +70,14 @@ class MonitoringStatus {
   Map<String, int> interruptionsByRule;
 }
 
-class NativeSettings {
-  NativeSettings({
-    required this.defaultLimitMinutes,
-  });
+/// A goal for today. Goals live natively so notification actions can tick them off
+/// while Flutter isn't running.
+class NativeGoal {
+  NativeGoal({required this.id, required this.text, required this.done});
 
-  int defaultLimitMinutes;
+  String id;
+  String text;
+  bool done;
 }
 
 @HostApi()
@@ -102,5 +104,12 @@ abstract class RecenterHostApi {
 
   void unlockApp(String ruleId);
 
-  void saveSettings(NativeSettings settings);
+  /// Today's goals. A new day starts with an empty list.
+  List<NativeGoal> getGoals();
+
+  List<NativeGoal> addGoal(String text);
+
+  List<NativeGoal> setGoalDone(String id, bool done);
+
+  List<NativeGoal> deleteGoal(String id);
 }

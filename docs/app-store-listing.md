@@ -26,13 +26,16 @@ HOW IT WORKS
 • Set how many minutes a day you want to spend there.
 • Write your own reminder title and message, such as "That's enough TikTok. You said you'd go for a walk."
 • When your time is up, your reminder appears. Five seconds later, the app is paused with your message on screen.
-• Need it for something important? Unlock it for a short cool-down, and Recenter will check in again afterwards.
+• Need it for something important? Unlock it for the time you chose for that app, and Recenter will check in again afterwards.
 
 WHY YOUR OWN WORDS
 Generic "time limit reached" screens are easy to tap past. A reminder you wrote to yourself, about why you wanted to stop, is much harder to ignore. Recenter puts your intention back in front of you right when you need it.
 
+TODAY'S GOALS, RIGHT WHEN YOU NEED THEM
+Add a few goals for the day, like "Read 20 pages" or "Go for a walk". Every reminder shows your next goal, so stopping comes with something better to do. Tick goals off in the app, or straight from the reminder.
+
 A DIFFERENT LIMIT AND MESSAGE FOR EACH APP
-Ten minutes of YouTube might be fine while thirty minutes of scrolling isn't. Give every app its own limit and its own reminder, and turn rules on or off whenever you like.
+Ten minutes of YouTube might be fine while thirty minutes of scrolling isn't. Give every app its own limit, reminder and unlock time, and turn rules on or off whenever you like. Everything resets at midnight.
 
 PRIVATE BY DESIGN
 • No account and no sign-up.

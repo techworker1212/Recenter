@@ -4,6 +4,7 @@ import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
+import java.util.UUID
 
 /** A rule as the native side sees it. Copy is already resolved (fallback applied) by Flutter. */
 data class StoredRule(
@@ -17,6 +18,9 @@ data class StoredRule(
     val body: String,
     val enabled: Boolean,
 )
+
+/** A goal for today. */
+data class StoredGoal(val id: String, val text: String, val done: Boolean)
 
 /**
  * Native-side source of truth for the monitor service and pause screen, so they keep
@@ -134,6 +138,41 @@ class RuleStore(context: Context) {
         return true
     }
 
+    /** Today's goals. Goals from an earlier day read as an empty list. */
+    fun goals(): List<StoredGoal> {
+        if (prefs.getString(KEY_GOALS_DAY, null) != today()) return emptyList()
+        val array = JSONArray(prefs.getString(KEY_GOALS, null) ?: "[]")
+        return (0 until array.length()).map {
+            val json = array.getJSONObject(it)
+            StoredGoal(json.getString("id"), json.getString("text"), json.getBoolean("done"))
+        }
+    }
+
+    fun nextGoal(): StoredGoal? = goals().firstOrNull { !it.done }
+
+    fun addGoal(text: String): List<StoredGoal> {
+        val trimmed = text.trim()
+        if (trimmed.isEmpty()) return goals()
+        return saveGoals(goals() + StoredGoal(UUID.randomUUID().toString(), trimmed, false))
+    }
+
+    fun setGoalDone(id: String, done: Boolean): List<StoredGoal> =
+        saveGoals(goals().map { if (it.id == id) it.copy(done = done) else it })
+
+    fun deleteGoal(id: String): List<StoredGoal> = saveGoals(goals().filterNot { it.id == id })
+
+    private fun saveGoals(goals: List<StoredGoal>): List<StoredGoal> {
+        val array = JSONArray()
+        goals.forEach {
+            array.put(JSONObject().put("id", it.id).put("text", it.text).put("done", it.done))
+        }
+        prefs.edit()
+            .putString(KEY_GOALS, array.toString())
+            .putString(KEY_GOALS_DAY, today())
+            .apply()
+        return goals
+    }
+
     private fun today() = LocalDate.now().toString()
 
     private fun cooldownKey(ruleId: String) = "cooldown.$ruleId"
@@ -144,6 +183,8 @@ class RuleStore(context: Context) {
         const val DEFAULT_UNLOCK_MINUTES = 2
         private const val KEY_BLOCKED = "blocked"
         private const val KEY_ACTIVE_DAY = "activeDay"
+        private const val KEY_GOALS = "goals"
+        private const val KEY_GOALS_DAY = "goalsDay"
         private const val KEY_INTERRUPTIONS_BY_RULE = "interruptionsByRule"
         private const val KEY_INTERRUPTION_DAY = "interruptionDay"
     }

@@ -50,12 +50,25 @@ object Notifications {
 
     /** The 5-second warning, using that rule's own title and body. */
     fun showWarning(context: Context, rule: StoredRule) {
-        val notification = Notification.Builder(context, CHANNEL_WARNING)
+        val goals = RuleStore(context).goals().filterNot { it.done }
+        val body = goals.firstOrNull()?.let { "${rule.body}\nToday's goal: ${it.text}" } ?: rule.body
+        val builder = Notification.Builder(context, CHANNEL_WARNING)
+        // "Done: …" buttons tick a goal off without opening the app (Android allows three).
+        goals.take(3).forEach { goal ->
+            builder.addAction(
+                Notification.Action.Builder(
+                    null,
+                    "Done: ${goal.text}",
+                    GoalActionReceiver.pendingIntent(context, goal.id, warningId(rule.id)),
+                ).build(),
+            )
+        }
+        val notification = builder
             .setSmallIcon(R.drawable.ic_stat_rethink)
             .setColor(context.getColor(R.color.rethink_teal))
             .setContentTitle(rule.title)
-            .setContentText(rule.body)
-            .setStyle(Notification.BigTextStyle().bigText(rule.body))
+            .setContentText(body)
+            .setStyle(Notification.BigTextStyle().bigText(body))
             .setCategory(Notification.CATEGORY_REMINDER)
             .setAutoCancel(true)
             .setTimeoutAfter(WARNING_SECONDS * 1000L + 2_000L)
@@ -83,11 +96,15 @@ object Notifications {
             .notify(warningId(rule.id), notification)
     }
 
+    fun cancel(context: Context, notificationId: Int) {
+        context.getSystemService(NotificationManager::class.java).cancel(notificationId)
+    }
+
     fun clearWarning(context: Context, ruleId: String) {
         context.getSystemService(NotificationManager::class.java).cancel(warningId(ruleId))
     }
 
-    private fun warningId(ruleId: String) = WARNING_ID_BASE + (ruleId.hashCode() and 0xFFFF)
+    internal fun warningId(ruleId: String) = WARNING_ID_BASE + (ruleId.hashCode() and 0xFFFF)
 
     private fun openApp(context: Context): PendingIntent {
         val intent = Intent(context, MainActivity::class.java)

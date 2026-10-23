@@ -60,6 +60,10 @@
         </service>
 
         <receiver
+            android:name=".GoalActionReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".BootReceiver"
             android:exported="false">
             <intent-filter>

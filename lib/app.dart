@@ -12,19 +12,20 @@ class RecenterApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Recenter',
-      debugShowCheckedModeBanner: false,
-      theme: recenterTheme(),
-      home: AnimatedBuilder(
-        animation: controller,
-        builder: (context, _) {
-          if (!controller.settings.onboardingComplete) {
-            return OnboardingScreen(controller: controller);
-          }
-          return HomeScreen(controller: controller);
-        },
-      ),
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        return MaterialApp(
+          title: 'Recenter',
+          debugShowCheckedModeBanner: false,
+          theme: recenterTheme(),
+          darkTheme: recenterDarkTheme(),
+          themeMode: controller.settings.themeMode,
+          home: controller.settings.onboardingComplete
+              ? HomeScreen(controller: controller)
+              : OnboardingScreen(controller: controller),
+        );
+      },
     );
   }
 }

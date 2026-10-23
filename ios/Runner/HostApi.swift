@@ -120,8 +120,24 @@ final class HostApi: RecenterHostApi {
     RuleScheduler.unlock(ruleId, store: store)
   }
 
-  func saveSettings(settings: NativeSettings) throws {
-    // Nothing native-side depends on app-wide settings any more; unlock time is per rule.
+  func getGoals() throws -> [NativeGoal] {
+    Self.native(store.goals)
+  }
+
+  func addGoal(text: String) throws -> [NativeGoal] {
+    Self.native(store.addGoal(text))
+  }
+
+  func setGoalDone(id: String, done: Bool) throws -> [NativeGoal] {
+    Self.native(store.setGoal(id, done: done))
+  }
+
+  func deleteGoal(id: String) throws -> [NativeGoal] {
+    Self.native(store.deleteGoal(id))
+  }
+
+  private static func native(_ goals: [Goal]) -> [NativeGoal] {
+    goals.map { NativeGoal(id: $0.id, text: $0.text, done: $0.done) }
   }
 
   private func snapshot() -> PermissionSnapshot {

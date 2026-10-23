@@ -62,8 +62,14 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     let content = UNMutableNotificationContent()
     content.title = rule.title
     content.body = rule.body
+    if let goal = store.nextGoal {
+      content.body += "\nToday's goal: \(goal.text)"
+    }
     content.sound = .default
     content.threadIdentifier = rule.id
+    // Press and hold the warning to tick off a goal without opening the app.
+    GoalNotifications.registerCategory(for: store.goals)
+    content.categoryIdentifier = GoalNotifications.categoryId
     let request = UNNotificationRequest(
       identifier: "warning.\(rule.id)",
       content: content,

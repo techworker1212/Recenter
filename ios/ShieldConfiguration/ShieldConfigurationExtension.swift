@@ -28,6 +28,12 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     make(store.rule(webDomain: webDomain.token) ?? store.rule(category: category.token))
   }
 
+  /// The user's message, plus their next unfinished goal for today.
+  private func subtitle(_ message: String) -> String {
+    guard let goal = store.nextGoal else { return message }
+    return "\(message)\n\nToday's goal: \(goal.text)"
+  }
+
   private func make(_ rule: StoredRule?) -> ShieldConfiguration {
     // Mirrors AppRule.fallbackTitle / fallbackBody in Dart.
     let fallbackTitle = "Time to recenter."
@@ -42,7 +48,7 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         .withTintColor(.white, renderingMode: .alwaysOriginal),
       title: ShieldConfiguration.Label(text: rule?.title ?? fallbackTitle, color: .white),
       subtitle: ShieldConfiguration.Label(
-        text: rule?.body ?? fallbackBody,
+        text: subtitle(rule?.body ?? fallbackBody),
         color: UIColor.white.withAlphaComponent(0.7)
       ),
       primaryButtonLabel: ShieldConfiguration.Label(text: "Close \(label)", color: .white),

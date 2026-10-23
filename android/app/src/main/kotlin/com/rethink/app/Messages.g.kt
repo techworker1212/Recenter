@@ -385,20 +385,31 @@ data class MonitoringStatus (
   }
 }
 
-/** Generated class from Pigeon that represents data sent in messages. */
-data class NativeSettings (
-  val defaultLimitMinutes: Long
+/**
+ * A goal for today. Goals live natively so notification actions can tick them off
+ * while Flutter isn't running.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class NativeGoal (
+  val id: String,
+  val text: String,
+  val done: Boolean
 )
  {
   companion object {
-    fun fromList(pigeonVar_list: List<Any?>): NativeSettings {
-      val defaultLimitMinutes = pigeonVar_list[0] as Long
-      return NativeSettings(defaultLimitMinutes)
+    fun fromList(pigeonVar_list: List<Any?>): NativeGoal {
+      val id = pigeonVar_list[0] as String
+      val text = pigeonVar_list[1] as String
+      val done = pigeonVar_list[2] as Boolean
+      return NativeGoal(id, text, done)
     }
   }
   fun toList(): List<Any?> {
     return listOf(
-      defaultLimitMinutes,
+      id,
+      text,
+      done,
     )
   }
   override fun equals(other: Any?): Boolean {
@@ -408,13 +419,15 @@ data class NativeSettings (
     if (this === other) {
       return true
     }
-    val other = other as NativeSettings
-    return MessagesPigeonUtils.deepEquals(this.defaultLimitMinutes, other.defaultLimitMinutes)
+    val other = other as NativeGoal
+    return MessagesPigeonUtils.deepEquals(this.id, other.id) && MessagesPigeonUtils.deepEquals(this.text, other.text) && MessagesPigeonUtils.deepEquals(this.done, other.done)
   }
 
   override fun hashCode(): Int {
     var result = javaClass.hashCode()
-    result = 31 * result + MessagesPigeonUtils.deepHash(this.defaultLimitMinutes)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.id)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.text)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.done)
     return result
   }
 }
@@ -443,7 +456,7 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
       }
       133.toByte() -> {
         return (readValue(buffer) as? List<Any?>)?.let {
-          NativeSettings.fromList(it)
+          NativeGoal.fromList(it)
         }
       }
       else -> super.readValueOfType(type, buffer)
@@ -467,7 +480,7 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
         stream.write(132)
         writeValue(stream, value.toList())
       }
-      is NativeSettings -> {
+      is NativeGoal -> {
         stream.write(133)
         writeValue(stream, value.toList())
       }
@@ -489,7 +502,11 @@ interface RecenterHostApi {
   fun listInstalledApps(): List<InstalledApp>
   fun pickIosActivity(callback: (Result<String>) -> Unit)
   fun unlockApp(ruleId: String)
-  fun saveSettings(settings: NativeSettings)
+  /** Today's goals. A new day starts with an empty list. */
+  fun getGoals(): List<NativeGoal>
+  fun addGoal(text: String): List<NativeGoal>
+  fun setGoalDone(id: String, done: Boolean): List<NativeGoal>
+  fun deleteGoal(id: String): List<NativeGoal>
 
   companion object {
     /** The codec used by RecenterHostApi. */
@@ -670,14 +687,63 @@ interface RecenterHostApi {
         }
       }
       run {
-        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.saveSettings$separatedMessageChannelSuffix", codec)
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.getGoals$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.getGoals())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.addGoal$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
-            val settingsArg = args[0] as NativeSettings
+            val textArg = args[0] as String
             val wrapped: List<Any?> = try {
-              api.saveSettings(settingsArg)
-              listOf(null)
+              listOf(api.addGoal(textArg))
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.setGoalDone$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val idArg = args[0] as String
+            val doneArg = args[1] as Boolean
+            val wrapped: List<Any?> = try {
+              listOf(api.setGoalDone(idArg, doneArg))
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.deleteGoal$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val idArg = args[0] as String
+            val wrapped: List<Any?> = try {
+              listOf(api.deleteGoal(idArg))
             } catch (exception: Throwable) {
               MessagesPigeonUtils.wrapError(exception)
             }

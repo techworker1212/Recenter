@@ -3,6 +3,7 @@ class AppRule {
   static const fallbackBody = "You've reached the limit you set for this app.";
   static const titleMax = 50;
   static const bodyMax = 120;
+  static const defaultLimitMinutes = 10;
   static const defaultUnlockMinutes = 2;
 
   const AppRule({

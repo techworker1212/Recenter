@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/app_rule.dart';
 import '../screens/rule_editor_screen.dart';
-import '../screens/settings_screen.dart';
 import '../state/app_controller.dart';
+import '../widgets/goals_section.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.controller});
@@ -19,16 +19,7 @@ class HomeScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Recenter'),
             actions: [
-              IconButton(
-                icon: const Icon(Icons.settings_outlined),
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => SettingsScreen(controller: controller),
-                    ),
-                  );
-                },
-              ),
+              _ThemeToggle(controller: controller),
             ],
           ),
           floatingActionButton: FloatingActionButton.extended(
@@ -54,6 +45,8 @@ class HomeScreen extends StatelessWidget {
                 _PermissionBanner(controller: controller),
               const SizedBox(height: 8),
               _InterruptionsCard(controller: controller),
+              const SizedBox(height: 16),
+              GoalsSection(controller: controller),
               if (controller.errorMessage != null) ...[
                 const SizedBox(height: 8),
                 Text(
@@ -111,6 +104,24 @@ class HomeScreen extends StatelessWidget {
       MaterialPageRoute(
         builder: (_) => RuleEditorScreen(controller: controller, existing: rule),
       ),
+    );
+  }
+}
+
+/// Switches between light and dark. Shows the mode you'll switch *to*.
+class _ThemeToggle extends StatelessWidget {
+  const _ThemeToggle({required this.controller});
+
+  final AppController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    final dark = brightness == Brightness.dark;
+    return IconButton(
+      icon: Icon(dark ? Icons.light_mode_outlined : Icons.dark_mode_outlined),
+      tooltip: dark ? 'Switch to light mode' : 'Switch to dark mode',
+      onPressed: () => controller.toggleTheme(brightness),
     );
   }
 }

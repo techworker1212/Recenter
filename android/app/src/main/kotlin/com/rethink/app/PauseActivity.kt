@@ -14,6 +14,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -29,6 +30,7 @@ class PauseActivity : Activity() {
 
     private lateinit var titleView: TextView
     private lateinit var bodyView: TextView
+    private lateinit var goalsView: LinearLayout
     private lateinit var closeButton: Button
     private lateinit var unlockButton: Button
 
@@ -66,8 +68,37 @@ class PauseActivity : Activity() {
         Notifications.clearWarning(this, rule.id)
         titleView.text = rule.title
         bodyView.text = rule.body
+        bindGoals()
         closeButton.text = "Close ${rule.label}"
         startUnlockDelay()
+    }
+
+    /** Today's goals as checkboxes, so they can be ticked off right here. */
+    private fun bindGoals() {
+        goalsView.removeAllViews()
+        val goals = store.goals()
+        goalsView.visibility = if (goals.isEmpty()) View.GONE else View.VISIBLE
+        if (goals.isEmpty()) return
+        goalsView.addView(
+            TextView(this).apply {
+                text = "Today's goals"
+                setTextColor(Color.WHITE)
+                setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                typeface = Typeface.DEFAULT_BOLD
+            },
+        )
+        goals.forEach { goal ->
+            goalsView.addView(
+                CheckBox(this).apply {
+                    text = goal.text
+                    isChecked = goal.done
+                    setTextColor(Color.WHITE)
+                    setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
+                    buttonTintList = ColorStateList.valueOf(getColor(R.color.rethink_teal))
+                    setOnCheckedChangeListener { _, checked -> store.setGoalDone(goal.id, checked) }
+                },
+            )
+        }
     }
 
     private fun startUnlockDelay() {
@@ -145,6 +176,9 @@ class PauseActivity : Activity() {
             setLineSpacing(0f, 1.2f)
         }
         root.addView(bodyView, margins(top = 12))
+
+        goalsView = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
+        root.addView(goalsView, margins(top = 28))
 
         root.addView(View(this), LinearLayout.LayoutParams(0, 0, 1f))
 

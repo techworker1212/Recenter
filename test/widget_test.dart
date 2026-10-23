@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/material.dart';
 import 'package:re_think/models/app_rule.dart';
+import 'package:re_think/models/app_settings.dart';
 
 void main() {
   test('empty notification copy uses the shared fallback', () {
@@ -42,5 +44,11 @@ void main() {
     );
     expect(rule.resolvedTitle, 'That’s enough TikTok');
     expect(rule.resolvedBody, 'Unlock only if you still need it.');
+  });
+
+  test('theme choice is saved, and older settings follow the phone', () {
+    const dark = AppSettings(themeMode: ThemeMode.dark);
+    expect(AppSettings.fromJson(dark.toJson()).themeMode, ThemeMode.dark);
+    expect(AppSettings.fromJson({'defaultLimitMinutes': 10}).themeMode, ThemeMode.system);
   });
 }

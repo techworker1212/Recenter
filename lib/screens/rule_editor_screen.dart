@@ -42,11 +42,10 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
   void initState() {
     super.initState();
     final existing = widget.existing;
-    final defaults = widget.controller.settings;
     _label = TextEditingController(text: existing?.displayLabel ?? '');
     _title = TextEditingController(text: existing?.notificationTitle ?? '');
     _body = TextEditingController(text: existing?.notificationBody ?? '');
-    _limit = existing?.limitMinutes ?? defaults.defaultLimitMinutes;
+    _limit = existing?.limitMinutes ?? AppRule.defaultLimitMinutes;
     _unlock = existing?.unlockMinutes ?? AppRule.defaultUnlockMinutes;
     _platformAppId = existing?.platformAppId ?? '';
     _pickedLabel = existing?.displayLabel;

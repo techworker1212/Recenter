@@ -2,6 +2,7 @@ import '../bridge/messages.g.dart';
 import '../bridge/native_bridge.dart';
 import '../models/app_rule.dart';
 import '../models/app_settings.dart';
+import '../models/goal.dart';
 import '../persistence/local_store.dart';
 
 /// Demo mode for App Store screenshots in the Simulator, where Screen Time can't be
@@ -56,8 +57,30 @@ class DemoBridge extends NativeBridge {
   @override
   Future<void> unlock(String ruleId) async {}
 
+  List<Goal> _goals = const [
+    Goal(id: 'g1', text: 'Go for a 20-minute walk', done: true),
+    Goal(id: 'g2', text: 'Read 20 pages', done: false),
+    Goal(id: 'g3', text: 'Call Mum', done: false),
+  ];
+
   @override
-  Future<void> saveSettings(AppSettings settings) async {}
+  Future<List<Goal>> goals() async => _goals;
+
+  @override
+  Future<List<Goal>> addGoal(String text) async => _goals = [
+    ..._goals,
+    Goal(id: 'g${_goals.length + 1}', text: text, done: false),
+  ];
+
+  @override
+  Future<List<Goal>> setGoalDone(String id, bool done) async => _goals = [
+    for (final goal in _goals)
+      goal.id == id ? Goal(id: goal.id, text: goal.text, done: done) : goal,
+  ];
+
+  @override
+  Future<List<Goal>> deleteGoal(String id) async =>
+      _goals = _goals.where((goal) => goal.id != id).toList();
 }
 
 /// Keeps the sample rules in memory so demo runs never touch real saved data.

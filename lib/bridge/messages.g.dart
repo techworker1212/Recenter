@@ -328,39 +328,51 @@ class MonitoringStatus {
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
 }
 
-class NativeSettings {
-  NativeSettings({
-    required this.defaultLimitMinutes,
+/// A goal for today. Goals live natively so notification actions can tick them off
+/// while Flutter isn't running.
+class NativeGoal {
+  NativeGoal({
+    required this.id,
+    required this.text,
+    required this.done,
   });
 
-  int defaultLimitMinutes;
+  String id;
+
+  String text;
+
+  bool done;
 
   List<Object?> _toList() {
     return <Object?>[
-      defaultLimitMinutes,
+      id,
+      text,
+      done,
     ];
   }
 
   Object encode() {
     return _toList();  }
 
-  static NativeSettings decode(Object result) {
+  static NativeGoal decode(Object result) {
     result as List<Object?>;
-    return NativeSettings(
-      defaultLimitMinutes: result[0]! as int,
+    return NativeGoal(
+      id: result[0]! as String,
+      text: result[1]! as String,
+      done: result[2]! as bool,
     );
   }
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
-    if (other is! NativeSettings || other.runtimeType != runtimeType) {
+    if (other is! NativeGoal || other.runtimeType != runtimeType) {
       return false;
     }
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(defaultLimitMinutes, other.defaultLimitMinutes);
+    return _deepEquals(id, other.id) && _deepEquals(text, other.text) && _deepEquals(done, other.done);
   }
 
   @override
@@ -388,7 +400,7 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is MonitoringStatus) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeSettings) {
+    }    else if (value is NativeGoal) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
     } else {
@@ -408,7 +420,7 @@ class _PigeonCodec extends StandardMessageCodec {
       case 132:
         return MonitoringStatus.decode(readValue(buffer)!);
       case 133:
-        return NativeSettings.decode(readValue(buffer)!);
+        return NativeGoal.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -613,21 +625,80 @@ class RecenterHostApi {
     ;
   }
 
-  Future<void> saveSettings(NativeSettings settings) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.saveSettings$pigeonVar_messageChannelSuffix';
+  /// Today's goals. A new day starts with an empty list.
+  Future<List<NativeGoal>> getGoals() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.getGoals$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[settings]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
-    _extractReplyValueOrThrow(
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
         pigeonVar_replyList,
         pigeonVar_channelName,
-        isNullValid: true,
+        isNullValid: false,
     )
     ;
+    return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
+  }
+
+  Future<List<NativeGoal>> addGoal(String text) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.addGoal$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[text]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
+  }
+
+  Future<List<NativeGoal>> setGoalDone(String id, bool done) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.setGoalDone$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[id, done]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
+  }
+
+  Future<List<NativeGoal>> deleteGoal(String id) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.deleteGoal$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[id]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
   }
 }
