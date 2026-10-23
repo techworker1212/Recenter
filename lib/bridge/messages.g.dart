@@ -440,6 +440,8 @@ class RecenterHostApi {
 
   final String pigeonVar_messageChannelSuffix;
 
+  /// Async because iOS reports notification and Screen Time status asynchronously; a
+  /// synchronous read right after launch can wrongly say "not allowed".
   Future<PermissionSnapshot> getPermissionStatus() async {
     final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.getPermissionStatus$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(

@@ -472,7 +472,9 @@ class MessagesPigeonCodec: FlutterStandardMessageCodec, @unchecked Sendable {
 
 /// Generated protocol from Pigeon that represents a handler of messages from Flutter.
 protocol RecenterHostApi {
-  func getPermissionStatus() throws -> PermissionSnapshot
+  /// Async because iOS reports notification and Screen Time status asynchronously; a
+  /// synchronous read right after launch can wrongly say "not allowed".
+  func getPermissionStatus(completion: @escaping (Result<PermissionSnapshot, Error>) -> Void)
   func requestPermission(kind: String, completion: @escaping (Result<PermissionSnapshot, Error>) -> Void)
   func upsertAppRule(rule: NativeAppRule) throws
   func deleteAppRule(id: String) throws
@@ -495,14 +497,18 @@ class RecenterHostApiSetup {
   /// Sets up an instance of `RecenterHostApi` to handle messages through the `binaryMessenger`.
   static func setUp(binaryMessenger: FlutterBinaryMessenger, api: RecenterHostApi?, messageChannelSuffix: String = "") {
     let channelSuffix = messageChannelSuffix.count > 0 ? ".\(messageChannelSuffix)" : ""
+    /// Async because iOS reports notification and Screen Time status asynchronously; a
+    /// synchronous read right after launch can wrongly say "not allowed".
     let getPermissionStatusChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.getPermissionStatus\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
     if let api = api {
       getPermissionStatusChannel.setMessageHandler { _, reply in
-        do {
-          let result = try api.getPermissionStatus()
-          reply(wrapResult(result))
-        } catch {
-          reply(wrapError(error))
+        api.getPermissionStatus { result in
+          switch result {
+          case .success(let res):
+            reply(wrapResult(res))
+          case .failure(let error):
+            reply(wrapError(error))
+          }
         }
       }
     } else {

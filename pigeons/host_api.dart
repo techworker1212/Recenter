@@ -82,6 +82,9 @@ class NativeGoal {
 
 @HostApi()
 abstract class RecenterHostApi {
+  /// Async because iOS reports notification and Screen Time status asynchronously; a
+  /// synchronous read right after launch can wrongly say "not allowed".
+  @async
   PermissionSnapshot getPermissionStatus();
 
   @async

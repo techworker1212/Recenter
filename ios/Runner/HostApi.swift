@@ -9,15 +9,10 @@ import UserNotifications
 /// one DeviceActivity monitor per rule.
 final class HostApi: RecenterHostApi {
   private let store = RuleStore.shared
-  private var notificationsAuthorized = false
-
-  init() {
-    refreshNotificationStatus()
-  }
-
-  func getPermissionStatus() throws -> PermissionSnapshot {
-    refreshNotificationStatus()
-    return snapshot()
+  func getPermissionStatus(completion: @escaping (Result<PermissionSnapshot, Error>) -> Void) {
+    Task { @MainActor in
+      completion(.success(await self.currentSnapshot()))
+    }
   }
 
   func requestPermission(
@@ -28,18 +23,18 @@ final class HostApi: RecenterHostApi {
     case "familyControls":
       Task { @MainActor in
         try? await AuthorizationCenter.shared.requestAuthorization(for: .individual)
-        completion(.success(self.snapshot()))
+        completion(.success(await self.currentSnapshot()))
       }
     case "notifications":
-      UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) {
-        granted, _ in
-        DispatchQueue.main.async {
-          self.notificationsAuthorized = granted
-          completion(.success(self.snapshot()))
-        }
+      Task { @MainActor in
+        _ = try? await UNUserNotificationCenter.current()
+          .requestAuthorization(options: [.alert, .sound])
+        completion(.success(await self.currentSnapshot()))
       }
     default:
-      completion(.success(snapshot()))
+      Task { @MainActor in
+        completion(.success(await self.currentSnapshot()))
+      }
     }
   }
 
@@ -72,6 +67,7 @@ final class HostApi: RecenterHostApi {
   }
 
   func startMonitoring() throws {
+    // Called after getPermissionStatus has already waited for the status to load.
     guard AuthorizationCenter.shared.authorizationStatus == .approved else {
       throw PigeonError(
         code: "family_controls",
@@ -140,22 +136,37 @@ final class HostApi: RecenterHostApi {
     goals.map { NativeGoal(id: $0.id, text: $0.text, done: $0.done) }
   }
 
-  private func snapshot() -> PermissionSnapshot {
-    PermissionSnapshot(
-      familyControls: AuthorizationCenter.shared.authorizationStatus == .approved,
-      notifications: notificationsAuthorized,
+  /// Waits for iOS's real answers instead of reading values that may not have loaded yet.
+  @MainActor
+  private func currentSnapshot() async -> PermissionSnapshot {
+    let settings = await UNUserNotificationCenter.current().notificationSettings()
+    let notifications = [.authorized, .provisional, .ephemeral]
+      .contains(settings.authorizationStatus)
+    return PermissionSnapshot(
+      familyControls: await Self.familyControlsApproved(),
+      notifications: notifications,
       usageAccess: false,
       overlay: false,
       batteryExemption: false
     )
   }
 
-  private func refreshNotificationStatus() {
-    UNUserNotificationCenter.current().getNotificationSettings { settings in
-      let authorized = settings.authorizationStatus == .authorized
-        || settings.authorizationStatus == .provisional
-      DispatchQueue.main.async { self.notificationsAuthorized = authorized }
+  /// Right after launch, AuthorizationCenter can briefly report "not determined" before it
+  /// has loaded the saved approval. Give it up to ~2 seconds to settle before saying no.
+  @MainActor
+  private static func familyControlsApproved() async -> Bool {
+    let center = AuthorizationCenter.shared
+    for _ in 0..<8 {
+      switch center.authorizationStatus {
+      case .approved:
+        return true
+      case .denied:
+        return false
+      default:
+        try? await Task.sleep(nanoseconds: 250_000_000)
+      }
     }
+    return center.authorizationStatus == .approved
   }
 
   private static func topViewController() -> UIViewController? {

@@ -74,7 +74,9 @@ class MainActivity : FlutterActivity() {
     private inner class HostApi : RecenterHostApi {
         private val store = RuleStore(this@MainActivity)
 
-        override fun getPermissionStatus() = Permissions.snapshot(this@MainActivity)
+        override fun getPermissionStatus(callback: (Result<PermissionSnapshot>) -> Unit) {
+            callback(Result.success(Permissions.snapshot(this@MainActivity)))
+        }
 
         override fun requestPermission(
             kind: String,

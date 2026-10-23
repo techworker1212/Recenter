@@ -492,7 +492,11 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface RecenterHostApi {
-  fun getPermissionStatus(): PermissionSnapshot
+  /**
+   * Async because iOS reports notification and Screen Time status asynchronously; a
+   * synchronous read right after launch can wrongly say "not allowed".
+   */
+  fun getPermissionStatus(callback: (Result<PermissionSnapshot>) -> Unit)
   fun requestPermission(kind: String, callback: (Result<PermissionSnapshot>) -> Unit)
   fun upsertAppRule(rule: NativeAppRule)
   fun deleteAppRule(id: String)
@@ -521,12 +525,15 @@ interface RecenterHostApi {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.getPermissionStatus$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { _, reply ->
-            val wrapped: List<Any?> = try {
-              listOf(api.getPermissionStatus())
-            } catch (exception: Throwable) {
-              MessagesPigeonUtils.wrapError(exception)
+            api.getPermissionStatus{ result: Result<PermissionSnapshot> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(MessagesPigeonUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(MessagesPigeonUtils.wrapResult(data))
+              }
             }
-            reply.reply(wrapped)
           }
         } else {
           channel.setMessageHandler(null)

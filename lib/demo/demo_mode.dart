@@ -25,6 +25,7 @@ class DemoBridge extends NativeBridge {
   @override
   Future<PermissionSnapshot> status() async => _granted;
 
+
   @override
   Future<PermissionSnapshot> request(String kind) async => _granted;
 
