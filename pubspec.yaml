@@ -1,7 +1,7 @@
 name: re_think
 description: Per-app time limits with a 5-second custom warning, then a pause screen.
 publish_to: "none"
-version: 1.0.0+6
+version: 1.0.0+7
 
 environment:
   sdk: ^3.13.5

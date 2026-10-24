@@ -28,10 +28,10 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     make(store.rule(webDomain: webDomain.token) ?? store.rule(category: category.token))
   }
 
-  /// The user's message, plus their next unfinished goal for today.
+  /// The user's message, plus today's unfinished goals.
   private func subtitle(_ message: String) -> String {
-    guard let goal = store.nextGoal else { return message }
-    return "\(message)\n\nToday's goal: \(goal.text)"
+    guard let goals = GoalStore.shared.summary else { return message }
+    return "\(message)\n\n\(goals)"
   }
 
   private func make(_ rule: StoredRule?) -> ShieldConfiguration {

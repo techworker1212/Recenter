@@ -67,9 +67,6 @@ final class RuleStore {
 
   private let defaults: UserDefaults
 
-  /// The App Group defaults, for extensions of this type in other files (goals).
-  var sharedDefaults: UserDefaults { defaults }
-
   init(defaults: UserDefaults? = UserDefaults(suiteName: RuleStore.appGroup)) {
     self.defaults = defaults ?? .standard
   }
@@ -166,7 +163,7 @@ final class RuleStore {
     setUnlockedUntil(nil, for: ruleId)
   }
 
-  static func today() -> String {
+  private static func today() -> String {
     let formatter = DateFormatter()
     formatter.calendar = Calendar(identifier: .gregorian)
     formatter.dateFormat = "yyyy-MM-dd"

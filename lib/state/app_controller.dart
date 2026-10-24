@@ -113,7 +113,11 @@ class AppController extends ChangeNotifier {
     }
   }
 
+  /// The main switch: turning it off switches every app off, turning it on switches every
+  /// app on, so the two never disagree.
   Future<void> setMonitoring(bool enabled) async {
+    final previous = rules;
+    await _setAllRulesEnabled(enabled);
     try {
       if (enabled) {
         await _syncAllRules();
@@ -124,8 +128,12 @@ class AppController extends ChangeNotifier {
       settings = settings.copyWith(monitoringEnabled: enabled);
       errorMessage = null;
     } catch (error) {
-      // Keep the switch honest: monitoring is only "on" if native accepted it.
+      // Keep the switches honest: monitoring is only "on" if native accepted it.
       settings = settings.copyWith(monitoringEnabled: false);
+      if (enabled) {
+        rules = previous.map((rule) => rule.copyWith(enabled: false)).toList();
+        await _store.saveRules(rules);
+      }
       errorMessage = _describe(error);
     }
     await _store.saveSettings(settings);
@@ -162,7 +170,32 @@ class AppController extends ChangeNotifier {
     if (failure != null) {
       errorMessage = failure;
       notifyListeners();
+      return;
     }
+    // Switching an app on while monitoring is off turns monitoring on, just for the apps
+    // that are switched on.
+    if (enabled && !settings.monitoringEnabled) {
+      await _startMonitoringForEnabledRules();
+    }
+  }
+
+  Future<void> _startMonitoringForEnabledRules() async {
+    try {
+      await _syncAllRules();
+      await _bridge.start();
+      settings = settings.copyWith(monitoringEnabled: true);
+      errorMessage = null;
+    } catch (error) {
+      errorMessage = _describe(error);
+    }
+    await _store.saveSettings(settings);
+    notifyListeners();
+  }
+
+  Future<void> _setAllRulesEnabled(bool enabled) async {
+    rules = rules.map((rule) => rule.copyWith(enabled: enabled)).toList();
+    await _store.saveRules(rules);
+    notifyListeners();
   }
 
   Future<void> deleteRule(String id) async {

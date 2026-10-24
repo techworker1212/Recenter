@@ -37,6 +37,9 @@
 		27D124034D79E9A39D49EE26 /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
 		D75161A823CB332884F247BA /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
 		11CDC062897689AAA86758E7 /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
+		424CC3B92585E16306D8F134 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41659A43EB1AE498DC41E5C5 /* NotificationViewController.swift */; };
+		7094594AB946870D343C741B /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
+		E4C7E4C25E57B947CAFB2206 /* GoalsNotification.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2A9CA52E9C3D91391E7C0910 /* GoalsNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +71,13 @@
 			remoteGlobalIDString = EBCDE076B7FC4E18439C65A2;
 			remoteInfo = ShieldAction;
 		};
+		14859DE24CCFB41A3D0C2F72 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2B3CD0B10CB798EACE25A47A;
+			remoteInfo = GoalsNotification;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -90,6 +100,7 @@
 				02EB57146A4F2A845EF543F8 /* DeviceActivityMonitor.appex in Embed Foundation Extensions */,
 				4678375E4A9CAE589E320AFB /* ShieldConfiguration.appex in Embed Foundation Extensions */,
 				68850FC1675CD02A7AB4B4C8 /* ShieldAction.appex in Embed Foundation Extensions */,
+				E4C7E4C25E57B947CAFB2206 /* GoalsNotification.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -133,6 +144,10 @@
 		5BBDD99C850A430DA1C70F3F /* ShieldAction.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ShieldAction.entitlements; sourceTree = "<group>"; };
 		28617FA409180973B4138B6F /* ShieldAction.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShieldAction.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F23159B91277DAEB99F217AC /* Goals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goals.swift; sourceTree = "<group>"; };
+		41659A43EB1AE498DC41E5C5 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		4F90374AC72A6440875993BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		51BE517AF7B83A0568356E52 /* GoalsNotification.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoalsNotification.entitlements; sourceTree = "<group>"; };
+		2A9CA52E9C3D91391E7C0910 /* GoalsNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GoalsNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -159,6 +174,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		B7121BD86780B762C9DA51AA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		287C63795D2CAD264EED6F78 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -199,6 +221,7 @@
 				AF7E10E93E9B8022FB275756 /* DeviceActivityMonitor */,
 				E9D77F1CE5A7900D17162DAC /* ShieldConfiguration */,
 				D9D291A94707026295AABB5E /* ShieldAction */,
+				550D4E5EC47480D1860C16D4 /* GoalsNotification */,
 			);
 			sourceTree = "<group>";
 		};
@@ -210,6 +233,7 @@
 				9FFE093B46CA166603D8CF7F /* DeviceActivityMonitor.appex */,
 				65F7680F4EC30782AC70CD02 /* ShieldConfiguration.appex */,
 				28617FA409180973B4138B6F /* ShieldAction.appex */,
+				2A9CA52E9C3D91391E7C0910 /* GoalsNotification.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -274,6 +298,16 @@
 			path = ShieldAction;
 			sourceTree = "<group>";
 		};
+		550D4E5EC47480D1860C16D4 /* GoalsNotification */ = {
+			isa = PBXGroup;
+			children = (
+				41659A43EB1AE498DC41E5C5 /* NotificationViewController.swift */,
+				4F90374AC72A6440875993BB /* Info.plist */,
+				51BE517AF7B83A0568356E52 /* GoalsNotification.entitlements */,
+			);
+			path = GoalsNotification;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -312,6 +346,7 @@
 				D8F4F82806C64360FFB76B6C /* PBXTargetDependency */,
 				286DE6B14528D4A3134DD531 /* PBXTargetDependency */,
 				55AC0F3BF49D1AE458E3D0AF /* PBXTargetDependency */,
+				521A7C74FA2BA062A0CC28CB /* PBXTargetDependency */,
 			);
 			name = Runner;
 			packageProductDependencies = (
@@ -372,6 +407,23 @@
 			productReference = 28617FA409180973B4138B6F /* ShieldAction.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		2B3CD0B10CB798EACE25A47A /* GoalsNotification */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D15DDF700C0F333E54D1DC17 /* Build configuration list for PBXNativeTarget "GoalsNotification" */;
+			buildPhases = (
+				8D1DB64A79AE6F5BD6629185 /* Sources */,
+				287C63795D2CAD264EED6F78 /* Frameworks */,
+				3284593C879DCFBD9D5AAECC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GoalsNotification;
+			productName = GoalsNotification;
+			productReference = 2A9CA52E9C3D91391E7C0910 /* GoalsNotification.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -413,6 +465,7 @@
 				5546FA02B1AE9CE1574206AF /* DeviceActivityMonitor */,
 				30A2188C9CD46A4BC88F0D2D /* ShieldConfiguration */,
 				EBCDE076B7FC4E18439C65A2 /* ShieldAction */,
+				2B3CD0B10CB798EACE25A47A /* GoalsNotification */,
 			);
 		};
 /* End PBXProject section */
@@ -451,6 +504,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		58472790AE01327F9F959870 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3284593C879DCFBD9D5AAECC /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -551,6 +611,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		8D1DB64A79AE6F5BD6629185 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				424CC3B92585E16306D8F134 /* NotificationViewController.swift in Sources */,
+				7094594AB946870D343C741B /* Goals.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -573,6 +642,11 @@
 			isa = PBXTargetDependency;
 			target = EBCDE076B7FC4E18439C65A2 /* ShieldAction */;
 			targetProxy = 64F7732FCF6E33C08D0C2F6A /* PBXContainerItemProxy */;
+		};
+		521A7C74FA2BA062A0CC28CB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2B3CD0B10CB798EACE25A47A /* GoalsNotification */;
+			targetProxy = 14859DE24CCFB41A3D0C2F72 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1134,6 +1208,90 @@
 			};
 			name = Profile;
 		};
+		B3635915557A8B63A4947487 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9740EEB21CF90195004384FC;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = GoalsNotification/GoalsNotification.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = NC7A2HC4R5;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GoalsNotification/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.aquibkhan.recenter.GoalsNotification;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		817BDF77759321E9CB890DCD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7AFA3C8E1D35360C0083082E;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = GoalsNotification/GoalsNotification.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = NC7A2HC4R5;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GoalsNotification/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.aquibkhan.recenter.GoalsNotification;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F7B70C1FF0DF94228F63F674 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7AFA3C8E1D35360C0083082E;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = GoalsNotification/GoalsNotification.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = NC7A2HC4R5;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = GoalsNotification/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(FLUTTER_BUILD_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.aquibkhan.recenter.GoalsNotification;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Profile;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1193,6 +1351,16 @@
 				4DADDC5692D2BCE41F9E7C87 /* Debug */,
 				5469CFF3BEB553C1A62AD2DE /* Release */,
 				BE4E22910032740FAE7BA8E1 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D15DDF700C0F333E54D1DC17 /* Build configuration list for PBXNativeTarget "GoalsNotification" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3635915557A8B63A4947487 /* Debug */,
+				817BDF77759321E9CB890DCD /* Release */,
+				F7B70C1FF0DF94228F63F674 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

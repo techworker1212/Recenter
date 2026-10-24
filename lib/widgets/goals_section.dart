@@ -54,7 +54,7 @@ class _GoalsSectionState extends State<GoalsSection> {
         ),
         const SizedBox(height: 4),
         Text(
-          'Your next goal shows up with every interruption.',
+          'Your goals show up with every interruption. Press and hold the reminder to tick them off.',
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: 8),

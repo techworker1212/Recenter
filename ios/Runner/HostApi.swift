@@ -117,19 +117,19 @@ final class HostApi: RecenterHostApi {
   }
 
   func getGoals() throws -> [NativeGoal] {
-    Self.native(store.goals)
+    Self.native(GoalStore.shared.goals)
   }
 
   func addGoal(text: String) throws -> [NativeGoal] {
-    Self.native(store.addGoal(text))
+    Self.native(GoalStore.shared.add(text))
   }
 
   func setGoalDone(id: String, done: Bool) throws -> [NativeGoal] {
-    Self.native(store.setGoal(id, done: done))
+    Self.native(GoalStore.shared.set(id, done: done))
   }
 
   func deleteGoal(id: String) throws -> [NativeGoal] {
-    Self.native(store.deleteGoal(id))
+    Self.native(GoalStore.shared.delete(id))
   }
 
   private static func native(_ goals: [Goal]) -> [NativeGoal] {
