@@ -51,9 +51,9 @@ object Notifications {
     /** The 5-second warning, using that rule's own title and body. */
     fun showWarning(context: Context, rule: StoredRule) {
         val goals = RuleStore(context).goals().filterNot { it.done }
-        val label = if (goals.size == 1) "Today's goal" else "Today's goals"
+        val label = if (goals.size == 1) "Today's goal:" else "Today's goals:"
         val body = if (goals.isEmpty()) rule.body
-        else "${rule.body}\n$label: ${goals.joinToString(" · ") { it.text }}"
+        else "${rule.body}\n\n$label\n" + goals.joinToString("\n") { "• ${it.text}" }
         val builder = Notification.Builder(context, CHANNEL_WARNING)
         // "Done: …" buttons tick a goal off without opening the app (Android allows three).
         goals.take(3).forEach { goal ->

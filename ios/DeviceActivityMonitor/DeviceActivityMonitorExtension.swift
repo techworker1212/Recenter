@@ -63,7 +63,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     content.title = rule.title
     content.body = rule.body
     if let goals = GoalStore.shared.summary {
-      content.body += "\n\(goals)"
+      content.body += "\n\n\(goals)"
     }
     content.userInfo = ["message": rule.body]
     content.sound = .default

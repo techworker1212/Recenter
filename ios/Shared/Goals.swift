@@ -52,12 +52,13 @@ final class GoalStore {
     save(goals.filter { $0.id != id })
   }
 
-  /// One line for notification and shield text, e.g. "Goals: Read 20 pages · Call Mum".
+  /// Today's unfinished goals as a bulleted list, one per line, for notification and
+  /// shield text.
   var summary: String? {
     let open = unfinished
     guard !open.isEmpty else { return nil }
-    let label = open.count == 1 ? "Today's goal" : "Today's goals"
-    return "\(label): " + open.map(\.text).joined(separator: " · ")
+    let label = open.count == 1 ? "Today's goal:" : "Today's goals:"
+    return ([label] + open.map { "• \($0.text)" }).joined(separator: "\n")
   }
 
   private func save(_ goals: [Goal]) -> [Goal] {
