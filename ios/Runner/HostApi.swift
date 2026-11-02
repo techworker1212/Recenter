@@ -132,6 +132,21 @@ final class HostApi: RecenterHostApi {
     Self.native(GoalStore.shared.delete(id))
   }
 
+  func getMorningReminder() throws -> MorningReminderSettings {
+    let current = MorningReminder.settings
+    return MorningReminderSettings(
+      enabled: current.enabled, hour: Int64(current.hour), minute: Int64(current.minute))
+  }
+
+  func setMorningReminder(settings: MorningReminderSettings) throws {
+    MorningReminder.settings = MorningReminder.Settings(
+      enabled: settings.enabled, hour: Int(settings.hour), minute: Int(settings.minute))
+  }
+
+  func consumePendingAction() throws -> String? {
+    PendingAction.consume()
+  }
+
   private static func native(_ goals: [Goal]) -> [NativeGoal] {
     goals.map { NativeGoal(id: $0.id, text: $0.text, done: $0.done) }
   }

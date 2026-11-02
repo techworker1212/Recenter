@@ -64,6 +64,14 @@
             android:exported="false" />
 
         <receiver
+            android:name=".MorningReminderReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name=".GoalReplyReceiver"
+            android:exported="false" />
+
+        <receiver
             android:name=".BootReceiver"
             android:exported="false">
             <intent-filter>

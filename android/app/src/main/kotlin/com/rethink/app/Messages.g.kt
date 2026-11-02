@@ -431,6 +431,53 @@ data class NativeGoal (
     return result
   }
 }
+
+/**
+ * The daily "what are your goals today?" notification. Times are local to the phone, so
+ * it follows the user's timezone.
+ *
+ * Generated class from Pigeon that represents data sent in messages.
+ */
+data class MorningReminderSettings (
+  val enabled: Boolean,
+  val hour: Long,
+  val minute: Long
+)
+ {
+  companion object {
+    fun fromList(pigeonVar_list: List<Any?>): MorningReminderSettings {
+      val enabled = pigeonVar_list[0] as Boolean
+      val hour = pigeonVar_list[1] as Long
+      val minute = pigeonVar_list[2] as Long
+      return MorningReminderSettings(enabled, hour, minute)
+    }
+  }
+  fun toList(): List<Any?> {
+    return listOf(
+      enabled,
+      hour,
+      minute,
+    )
+  }
+  override fun equals(other: Any?): Boolean {
+    if (other == null || other.javaClass != javaClass) {
+      return false
+    }
+    if (this === other) {
+      return true
+    }
+    val other = other as MorningReminderSettings
+    return MessagesPigeonUtils.deepEquals(this.enabled, other.enabled) && MessagesPigeonUtils.deepEquals(this.hour, other.hour) && MessagesPigeonUtils.deepEquals(this.minute, other.minute)
+  }
+
+  override fun hashCode(): Int {
+    var result = javaClass.hashCode()
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.enabled)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.hour)
+    result = 31 * result + MessagesPigeonUtils.deepHash(this.minute)
+    return result
+  }
+}
 private open class MessagesPigeonCodec : StandardMessageCodec() {
   override fun readValueOfType(type: Byte, buffer: ByteBuffer): Any? {
     return when (type) {
@@ -459,6 +506,11 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
           NativeGoal.fromList(it)
         }
       }
+      134.toByte() -> {
+        return (readValue(buffer) as? List<Any?>)?.let {
+          MorningReminderSettings.fromList(it)
+        }
+      }
       else -> super.readValueOfType(type, buffer)
     }
   }
@@ -482,6 +534,10 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
       }
       is NativeGoal -> {
         stream.write(133)
+        writeValue(stream, value.toList())
+      }
+      is MorningReminderSettings -> {
+        stream.write(134)
         writeValue(stream, value.toList())
       }
       else -> super.writeValue(stream, value)
@@ -511,6 +567,13 @@ interface RecenterHostApi {
   fun addGoal(text: String): List<NativeGoal>
   fun setGoalDone(id: String, done: Boolean): List<NativeGoal>
   fun deleteGoal(id: String): List<NativeGoal>
+  fun getMorningReminder(): MorningReminderSettings
+  fun setMorningReminder(settings: MorningReminderSettings)
+  /**
+   * Something a notification tap asked the app to do once it opens ("openGoals"), or null.
+   * Reading it clears it.
+   */
+  fun consumePendingAction(): String?
 
   companion object {
     /** The codec used by RecenterHostApi. */
@@ -751,6 +814,54 @@ interface RecenterHostApi {
             val idArg = args[0] as String
             val wrapped: List<Any?> = try {
               listOf(api.deleteGoal(idArg))
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.getMorningReminder$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.getMorningReminder())
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.setMorningReminder$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val settingsArg = args[0] as MorningReminderSettings
+            val wrapped: List<Any?> = try {
+              api.setMorningReminder(settingsArg)
+              listOf(null)
+            } catch (exception: Throwable) {
+              MessagesPigeonUtils.wrapError(exception)
+            }
+            reply.reply(wrapped)
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.re_think.RecenterHostApi.consumePendingAction$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { _, reply ->
+            val wrapped: List<Any?> = try {
+              listOf(api.consumePendingAction())
             } catch (exception: Throwable) {
               MessagesPigeonUtils.wrapError(exception)
             }

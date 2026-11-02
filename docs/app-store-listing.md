@@ -32,7 +32,7 @@ WHY YOUR OWN WORDS
 Generic "time limit reached" screens are easy to tap past. A reminder you wrote to yourself, about why you wanted to stop, is much harder to ignore. Recenter puts your intention back in front of you right when you need it.
 
 TODAY'S GOALS, RIGHT WHEN YOU NEED THEM
-Add a few goals for the day, like "Read 20 pages" or "Go for a walk". Every reminder shows your next goal, so stopping comes with something better to do. Tick goals off in the app, or straight from the reminder.
+Each morning Recenter asks what you'll focus on today. Add a few goals, like "Read 20 pages" or "Go for a walk", right from that notification or in the app. Every reminder shows your goals, so stopping comes with something better to do, and you can tick them off straight from the reminder. Each day starts fresh.
 
 A DIFFERENT LIMIT AND MESSAGE FOR EACH APP
 Ten minutes of YouTube might be fine while thirty minutes of scrolling isn't. Give every app its own limit, reminder and unlock time, and turn rules on or off whenever you like. Everything resets at midnight.

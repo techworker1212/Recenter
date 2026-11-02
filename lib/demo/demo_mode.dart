@@ -3,6 +3,7 @@ import '../bridge/native_bridge.dart';
 import '../models/app_rule.dart';
 import '../models/app_settings.dart';
 import '../models/goal.dart';
+import '../models/morning_reminder.dart';
 import '../persistence/local_store.dart';
 
 /// Demo mode for App Store screenshots in the Simulator, where Screen Time can't be
@@ -57,6 +58,17 @@ class DemoBridge extends NativeBridge {
 
   @override
   Future<void> unlock(String ruleId) async {}
+
+  MorningReminder _reminder = const MorningReminder();
+
+  @override
+  Future<MorningReminder> morningReminder() async => _reminder;
+
+  @override
+  Future<void> setMorningReminder(MorningReminder reminder) async => _reminder = reminder;
+
+  @override
+  Future<String?> consumePendingAction() async => null;
 
   List<Goal> _goals = const [
     Goal(id: 'g1', text: 'Go for a 20-minute walk', done: true),

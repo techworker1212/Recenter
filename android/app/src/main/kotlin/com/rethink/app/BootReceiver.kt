@@ -11,6 +11,7 @@ class BootReceiver : BroadcastReceiver() {
             Intent.ACTION_BOOT_COMPLETED,
             Intent.ACTION_MY_PACKAGE_REPLACED -> {
                 if (RuleStore(context).monitoring) MonitorService.start(context)
+                MorningReminder.schedule(context)
             }
         }
     }

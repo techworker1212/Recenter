@@ -12,6 +12,22 @@ import io.flutter.embedding.engine.FlutterEngine
 class MainActivity : FlutterActivity() {
     private var pendingPermission: ((Result<PermissionSnapshot>) -> Unit)? = null
 
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+        super.onCreate(savedInstanceState)
+        rememberAction(intent)
+        MorningReminder.schedule(this)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        rememberAction(intent)
+    }
+
+    /** A notification tap (e.g. the morning reminder) asked for something; Flutter reads it. */
+    private fun rememberAction(intent: Intent?) {
+        intent?.getStringExtra(EXTRA_ACTION)?.let { PendingActions.set(this, it) }
+    }
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
         RecenterHostApi.setUp(flutterEngine.dartExecutor.binaryMessenger, HostApi())
@@ -155,9 +171,27 @@ class MainActivity : FlutterActivity() {
         override fun deleteGoal(id: String) = store.deleteGoal(id).map(::native)
 
         private fun native(goal: StoredGoal) = NativeGoal(goal.id, goal.text, goal.done)
+
+        override fun getMorningReminder() = MorningReminder.settings(this@MainActivity).let {
+            MorningReminderSettings(it.enabled, it.hour.toLong(), it.minute.toLong())
+        }
+
+        override fun setMorningReminder(settings: MorningReminderSettings) {
+            MorningReminder.save(
+                this@MainActivity,
+                MorningReminder.Settings(
+                    settings.enabled,
+                    settings.hour.toInt(),
+                    settings.minute.toInt(),
+                ),
+            )
+        }
+
+        override fun consumePendingAction() = PendingActions.consume(this@MainActivity)
     }
 
     companion object {
         private const val REQUEST_NOTIFICATIONS = 41
+        const val EXTRA_ACTION = "recenterAction"
     }
 }

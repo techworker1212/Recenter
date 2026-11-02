@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -7,6 +9,7 @@ import '../bridge/native_bridge.dart';
 import '../models/app_rule.dart';
 import '../models/app_settings.dart';
 import '../models/goal.dart';
+import '../models/morning_reminder.dart';
 import '../persistence/local_store.dart';
 
 class AppController extends ChangeNotifier {
@@ -33,6 +36,13 @@ class AppController extends ChangeNotifier {
 
   /// Today's goals, shown on the home screen and with every interruption.
   List<Goal> goals = const [];
+
+  MorningReminder morningReminder = const MorningReminder();
+
+  /// Goes up each time the app should jump to the "Add a goal" box (morning reminder tap).
+  int goalsFocusRequest = 0;
+
+  Timer? _midnight;
   bool busy = false;
   String? errorMessage;
 
@@ -60,6 +70,7 @@ class AppController extends ChangeNotifier {
     rules = await _store.loadRules();
     await refreshNative();
     // Permissions are granted in system settings, so re-check whenever we come back.
+    _scheduleMidnightRefresh();
     _lifecycle = AppLifecycleListener(
       onResume: () async {
         await refreshNative();
@@ -72,14 +83,44 @@ class AppController extends ChangeNotifier {
   @override
   void dispose() {
     _lifecycle?.dispose();
+    _midnight?.cancel();
     super.dispose();
+  }
+
+  /// Goals, blocks and counts start fresh at midnight. Native code already treats the
+  /// new day as empty; this refreshes the screen if the app is open at that moment.
+  void _scheduleMidnightRefresh() {
+    _midnight?.cancel();
+    final now = DateTime.now();
+    final midnight = DateTime(now.year, now.month, now.day + 1);
+    _midnight = Timer(midnight.difference(now) + const Duration(seconds: 1), () async {
+      await refreshNative();
+      notifyListeners();
+      _scheduleMidnightRefresh();
+    });
+  }
+
+  Future<void> setMorningReminder(MorningReminder reminder) async {
+    morningReminder = reminder;
+    notifyListeners();
+    try {
+      await _bridge.setMorningReminder(reminder);
+      errorMessage = null;
+    } catch (error) {
+      errorMessage = _describe(error);
+      notifyListeners();
+    }
   }
 
   Future<void> refreshNative() async {
     try {
       permissions = await _bridge.status();
-      // Goals can be ticked off from a notification while the app is closed.
+      // Goals can be ticked off, or added, from a notification while the app is closed.
       goals = await _bridge.goals();
+      morningReminder = await _bridge.morningReminder();
+      if (await _bridge.consumePendingAction() == 'openGoals') {
+        goalsFocusRequest++;
+      }
       final status = await _bridge.monitoring();
       interruptionsToday = status.interruptionsToday;
       interruptionsByRule = status.interruptionsByRule;

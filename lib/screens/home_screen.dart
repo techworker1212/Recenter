@@ -18,15 +18,16 @@ class HomeScreen extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Recenter'),
-            actions: [
-              _ThemeToggle(controller: controller),
-            ],
+            actions: [_ThemeToggle(controller: controller)],
           ),
-          floatingActionButton: FloatingActionButton.extended(
-            onPressed: () => _openEditor(context),
-            icon: const Icon(Icons.add),
-            label: const Text('Add app'),
-          ),
+          // Hidden while typing so it doesn't cover the "Add a goal" box.
+          floatingActionButton: MediaQuery.of(context).viewInsets.bottom > 0
+              ? null
+              : FloatingActionButton.extended(
+                  onPressed: () => _openEditor(context),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add app'),
+                ),
           body: ListView(
             padding: const EdgeInsets.all(16),
             children: [
@@ -61,13 +62,15 @@ class HomeScreen extends StatelessWidget {
                 const Text(
                   'Add an app, set a time limit, and write the reminder you want to see when time is up.',
                 ),
-              ...controller.rules.map((rule) => _RuleTile(
-                    rule: rule,
-                    onEdit: () => _openEditor(context, rule: rule),
-                    onToggle: (enabled) =>
-                        controller.setRuleEnabled(rule, enabled),
-                    onDelete: () => _confirmDelete(context, rule),
-                  )),
+              ...controller.rules.map(
+                (rule) => _RuleTile(
+                  rule: rule,
+                  onEdit: () => _openEditor(context, rule: rule),
+                  onToggle: (enabled) =>
+                      controller.setRuleEnabled(rule, enabled),
+                  onDelete: () => _confirmDelete(context, rule),
+                ),
+              ),
               const SizedBox(height: 72),
             ],
           ),
@@ -102,7 +105,8 @@ class HomeScreen extends StatelessWidget {
   Future<void> _openEditor(BuildContext context, {AppRule? rule}) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => RuleEditorScreen(controller: controller, existing: rule),
+        builder: (_) =>
+            RuleEditorScreen(controller: controller, existing: rule),
       ),
     );
   }
@@ -134,12 +138,20 @@ class _InterruptionsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = {for (final rule in controller.rules) rule.id: rule.displayLabel};
-    final perApp = controller.interruptionsByRule.entries
-        .where((entry) => entry.value > 0)
-        .map((entry) => (label: labels[entry.key] ?? 'Removed app', count: entry.value))
-        .toList()
-      ..sort((a, b) => b.count.compareTo(a.count));
+    final labels = {
+      for (final rule in controller.rules) rule.id: rule.displayLabel,
+    };
+    final perApp =
+        controller.interruptionsByRule.entries
+            .where((entry) => entry.value > 0)
+            .map(
+              (entry) => (
+                label: labels[entry.key] ?? 'Removed app',
+                count: entry.value,
+              ),
+            )
+            .toList()
+          ..sort((a, b) => b.count.compareTo(a.count));
 
     return Card(
       clipBehavior: Clip.antiAlias,

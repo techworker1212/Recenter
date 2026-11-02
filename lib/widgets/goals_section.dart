@@ -16,11 +16,51 @@ class GoalsSection extends StatefulWidget {
 
 class _GoalsSectionState extends State<GoalsSection> {
   final _text = TextEditingController();
+  final _focus = FocusNode();
+  final _inputKey = GlobalKey();
+  late int _seenFocusRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    _seenFocusRequest = widget.controller.goalsFocusRequest;
+    widget.controller.addListener(_onController);
+    // Opened from the morning reminder on a cold start: the request is already waiting.
+    if (_seenFocusRequest > 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _focusInput());
+    }
+  }
 
   @override
   void dispose() {
+    widget.controller.removeListener(_onController);
     _text.dispose();
+    _focus.dispose();
     super.dispose();
+  }
+
+  void _onController() {
+    final request = widget.controller.goalsFocusRequest;
+    if (request != _seenFocusRequest) {
+      _seenFocusRequest = request;
+      WidgetsBinding.instance.addPostFrameCallback((_) => _focusInput());
+    }
+  }
+
+  /// The morning reminder was tapped: scroll to "Add a goal" and bring up the keyboard.
+  void _focusInput() {
+    if (!mounted) {
+      return;
+    }
+    final target = _inputKey.currentContext;
+    if (target != null) {
+      Scrollable.ensureVisible(
+        target,
+        alignment: 0.3,
+        duration: const Duration(milliseconds: 300),
+      );
+    }
+    _focus.requestFocus();
   }
 
   Future<void> _add() async {
@@ -58,6 +98,7 @@ class _GoalsSectionState extends State<GoalsSection> {
           style: theme.textTheme.bodySmall,
         ),
         const SizedBox(height: 8),
+        _MorningReminderTile(controller: widget.controller),
         Card(
           child: Column(
             children: [
@@ -68,7 +109,9 @@ class _GoalsSectionState extends State<GoalsSection> {
                   children: [
                     Expanded(
                       child: TextField(
+                        key: _inputKey,
                         controller: _text,
+                        focusNode: _focus,
                         maxLength: Goal.textMax,
                         textInputAction: TextInputAction.done,
                         onSubmitted: (_) => _add(),
@@ -91,6 +134,47 @@ class _GoalsSectionState extends State<GoalsSection> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// "Morning reminder · 6:00 AM": a switch to turn it off, tap to change the time.
+class _MorningReminderTile extends StatelessWidget {
+  const _MorningReminderTile({required this.controller});
+
+  final AppController controller;
+
+  Future<void> _pickTime(BuildContext context) async {
+    final reminder = controller.morningReminder;
+    final time = await showTimePicker(
+      context: context,
+      initialTime: reminder.time,
+      helpText: 'Morning reminder',
+    );
+    if (time != null) {
+      await controller.setMorningReminder(reminder.copyWith(time: time, enabled: true));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final reminder = controller.morningReminder;
+    return Card(
+      child: ListTile(
+        leading: const Icon(Icons.wb_twilight_outlined),
+        title: const Text('Morning reminder'),
+        subtitle: Text(
+          reminder.enabled
+              ? 'Every day at ${reminder.time.format(context)} · tap to change'
+              : 'Off',
+        ),
+        onTap: () => _pickTime(context),
+        trailing: Switch(
+          value: reminder.enabled,
+          onChanged: (enabled) =>
+              controller.setMorningReminder(reminder.copyWith(enabled: enabled)),
+        ),
+      ),
     );
   }
 }

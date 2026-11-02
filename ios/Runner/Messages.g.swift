@@ -413,6 +413,50 @@ struct NativeGoal: Hashable {
   }
 }
 
+/// The daily "what are your goals today?" notification. Times are local to the phone, so
+/// it follows the user's timezone.
+///
+/// Generated class from Pigeon that represents data sent in messages.
+struct MorningReminderSettings: Hashable {
+  var enabled: Bool
+  var hour: Int64
+  var minute: Int64
+
+
+  // swift-format-ignore: AlwaysUseLowerCamelCase
+  static func fromList(_ pigeonVar_list: [Any?]) -> MorningReminderSettings? {
+    let enabled = pigeonVar_list[0] as! Bool
+    let hour = pigeonVar_list[1] as! Int64
+    let minute = pigeonVar_list[2] as! Int64
+
+    return MorningReminderSettings(
+      enabled: enabled,
+      hour: hour,
+      minute: minute
+    )
+  }
+  func toList() -> [Any?] {
+    return [
+      enabled,
+      hour,
+      minute,
+    ]
+  }
+  static func == (lhs: MorningReminderSettings, rhs: MorningReminderSettings) -> Bool {
+    if Swift.type(of: lhs) != Swift.type(of: rhs) {
+      return false
+    }
+    return deepEqualsMessages(lhs.enabled, rhs.enabled) && deepEqualsMessages(lhs.hour, rhs.hour) && deepEqualsMessages(lhs.minute, rhs.minute)
+  }
+
+  func hash(into hasher: inout Hasher) {
+    hasher.combine("MorningReminderSettings")
+    deepHashMessages(value: enabled, hasher: &hasher)
+    deepHashMessages(value: hour, hasher: &hasher)
+    deepHashMessages(value: minute, hasher: &hasher)
+  }
+}
+
 private class MessagesPigeonCodecReader: FlutterStandardReader {
   override func readValue(ofType type: UInt8) -> Any? {
     switch type {
@@ -426,6 +470,8 @@ private class MessagesPigeonCodecReader: FlutterStandardReader {
       return MonitoringStatus.fromList(self.readValue() as! [Any?])
     case 133:
       return NativeGoal.fromList(self.readValue() as! [Any?])
+    case 134:
+      return MorningReminderSettings.fromList(self.readValue() as! [Any?])
     default:
       return super.readValue(ofType: type)
     }
@@ -448,6 +494,9 @@ private class MessagesPigeonCodecWriter: FlutterStandardWriter {
       super.writeValue(value.toList())
     } else if let value = value as? NativeGoal {
       super.writeByte(133)
+      super.writeValue(value.toList())
+    } else if let value = value as? MorningReminderSettings {
+      super.writeByte(134)
       super.writeValue(value.toList())
     } else {
       super.writeValue(value)
@@ -489,6 +538,11 @@ protocol RecenterHostApi {
   func addGoal(text: String) throws -> [NativeGoal]
   func setGoalDone(id: String, done: Bool) throws -> [NativeGoal]
   func deleteGoal(id: String) throws -> [NativeGoal]
+  func getMorningReminder() throws -> MorningReminderSettings
+  func setMorningReminder(settings: MorningReminderSettings) throws
+  /// Something a notification tap asked the app to do once it opens ("openGoals"), or null.
+  /// Reading it clears it.
+  func consumePendingAction() throws -> String?
 }
 
 /// Generated setup class from Pigeon to handle messages through the `binaryMessenger`.
@@ -702,6 +756,49 @@ class RecenterHostApiSetup {
       }
     } else {
       deleteGoalChannel.setMessageHandler(nil)
+    }
+    let getMorningReminderChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.getMorningReminder\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      getMorningReminderChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.getMorningReminder()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      getMorningReminderChannel.setMessageHandler(nil)
+    }
+    let setMorningReminderChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.setMorningReminder\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      setMorningReminderChannel.setMessageHandler { message, reply in
+        let args = message as! [Any?]
+        let settingsArg = args[0] as! MorningReminderSettings
+        do {
+          try api.setMorningReminder(settings: settingsArg)
+          reply(wrapResult(nil))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      setMorningReminderChannel.setMessageHandler(nil)
+    }
+    /// Something a notification tap asked the app to do once it opens ("openGoals"), or null.
+    /// Reading it clears it.
+    let consumePendingActionChannel = FlutterBasicMessageChannel(name: "dev.flutter.pigeon.re_think.RecenterHostApi.consumePendingAction\(channelSuffix)", binaryMessenger: binaryMessenger, codec: codec)
+    if let api = api {
+      consumePendingActionChannel.setMessageHandler { _, reply in
+        do {
+          let result = try api.consumePendingAction()
+          reply(wrapResult(result))
+        } catch {
+          reply(wrapError(error))
+        }
+      }
+    } else {
+      consumePendingActionChannel.setMessageHandler(nil)
     }
   }
 }

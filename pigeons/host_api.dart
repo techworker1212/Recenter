@@ -80,6 +80,20 @@ class NativeGoal {
   bool done;
 }
 
+/// The daily "what are your goals today?" notification. Times are local to the phone, so
+/// it follows the user's timezone.
+class MorningReminderSettings {
+  MorningReminderSettings({
+    required this.enabled,
+    required this.hour,
+    required this.minute,
+  });
+
+  bool enabled;
+  int hour;
+  int minute;
+}
+
 @HostApi()
 abstract class RecenterHostApi {
   /// Async because iOS reports notification and Screen Time status asynchronously; a
@@ -115,4 +129,12 @@ abstract class RecenterHostApi {
   List<NativeGoal> setGoalDone(String id, bool done);
 
   List<NativeGoal> deleteGoal(String id);
+
+  MorningReminderSettings getMorningReminder();
+
+  void setMorningReminder(MorningReminderSettings settings);
+
+  /// Something a notification tap asked the app to do once it opens ("openGoals"), or null.
+  /// Reading it clears it.
+  String? consumePendingAction();
 }

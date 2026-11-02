@@ -40,6 +40,7 @@
 		424CC3B92585E16306D8F134 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41659A43EB1AE498DC41E5C5 /* NotificationViewController.swift */; };
 		7094594AB946870D343C741B /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
 		E4C7E4C25E57B947CAFB2206 /* GoalsNotification.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2A9CA52E9C3D91391E7C0910 /* GoalsNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		86749D7F62EC6A907FC0CFD6 /* MorningReminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C043F4B2E69E9BF3D60D5B3C /* MorningReminder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -148,6 +149,7 @@
 		4F90374AC72A6440875993BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		51BE517AF7B83A0568356E52 /* GoalsNotification.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoalsNotification.entitlements; sourceTree = "<group>"; };
 		2A9CA52E9C3D91391E7C0910 /* GoalsNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GoalsNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		C043F4B2E69E9BF3D60D5B3C /* MorningReminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningReminder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +256,7 @@
 				B0BF612934D1771DD30D78DA /* HostApi.swift */,
 				0179F6B56FAA9D8FBC184976 /* ActivityPicker.swift */,
 				FC374BDCF54D70FF562F9AF6 /* Runner.entitlements */,
+				C043F4B2E69E9BF3D60D5B3C /* MorningReminder.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -575,6 +578,7 @@
 				03AB1586A2C5004EFC1DE43B /* RuleStore.swift in Sources */,
 				ED41DB2035A6525A90CFD917 /* RuleScheduler.swift in Sources */,
 				E4CFF2B187944CF7A3343CB5 /* Goals.swift in Sources */,
+				86749D7F62EC6A907FC0CFD6 /* MorningReminder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

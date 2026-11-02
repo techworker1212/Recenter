@@ -380,6 +380,58 @@ class NativeGoal {
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
 }
 
+/// The daily "what are your goals today?" notification. Times are local to the phone, so
+/// it follows the user's timezone.
+class MorningReminderSettings {
+  MorningReminderSettings({
+    required this.enabled,
+    required this.hour,
+    required this.minute,
+  });
+
+  bool enabled;
+
+  int hour;
+
+  int minute;
+
+  List<Object?> _toList() {
+    return <Object?>[
+      enabled,
+      hour,
+      minute,
+    ];
+  }
+
+  Object encode() {
+    return _toList();  }
+
+  static MorningReminderSettings decode(Object result) {
+    result as List<Object?>;
+    return MorningReminderSettings(
+      enabled: result[0]! as bool,
+      hour: result[1]! as int,
+      minute: result[2]! as int,
+    );
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  bool operator ==(Object other) {
+    if (other is! MorningReminderSettings || other.runtimeType != runtimeType) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    return _deepEquals(enabled, other.enabled) && _deepEquals(hour, other.hour) && _deepEquals(minute, other.minute);
+  }
+
+  @override
+  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
+}
+
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -403,6 +455,9 @@ class _PigeonCodec extends StandardMessageCodec {
     }    else if (value is NativeGoal) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
+    }    else if (value is MorningReminderSettings) {
+      buffer.putUint8(134);
+      writeValue(buffer, value.encode());
     } else {
       super.writeValue(buffer, value);
     }
@@ -421,6 +476,8 @@ class _PigeonCodec extends StandardMessageCodec {
         return MonitoringStatus.decode(readValue(buffer)!);
       case 133:
         return NativeGoal.decode(readValue(buffer)!);
+      case 134:
+        return MorningReminderSettings.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
     }
@@ -702,5 +759,63 @@ class RecenterHostApi {
     )
     ;
     return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
+  }
+
+  Future<MorningReminderSettings> getMorningReminder() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.getMorningReminder$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: false,
+    )
+    ;
+    return pigeonVar_replyValue! as MorningReminderSettings;
+  }
+
+  Future<void> setMorningReminder(MorningReminderSettings settings) async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.setMorningReminder$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[settings]);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+  }
+
+  /// Something a notification tap asked the app to do once it opens ("openGoals"), or null.
+  /// Reading it clears it.
+  Future<String?> consumePendingAction() async {
+    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.consumePendingAction$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channel = BasicMessageChannel<Object?>(
+      pigeonVar_channelName,
+      pigeonChannelCodec,
+      binaryMessenger: pigeonVar_binaryMessenger,
+    );
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(null);
+    final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
+
+    final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
+        pigeonVar_replyList,
+        pigeonVar_channelName,
+        isNullValid: true,
+    )
+    ;
+    return pigeonVar_replyValue as String?;
   }
 }

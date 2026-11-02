@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show TimeOfDay;
 
 import '../models/app_rule.dart';
 import '../models/goal.dart';
+import '../models/morning_reminder.dart';
 import 'messages.g.dart';
 
 class ListedApp {
@@ -69,6 +71,27 @@ class NativeBridge {
 
   Future<List<Goal>> deleteGoal(String id) async =>
       _goals(await _api.deleteGoal(id));
+
+  Future<MorningReminder> morningReminder() async {
+    final settings = await _api.getMorningReminder();
+    return MorningReminder(
+      enabled: settings.enabled,
+      time: TimeOfDay(hour: settings.hour, minute: settings.minute),
+    );
+  }
+
+  Future<void> setMorningReminder(MorningReminder reminder) {
+    return _api.setMorningReminder(
+      MorningReminderSettings(
+        enabled: reminder.enabled,
+        hour: reminder.time.hour,
+        minute: reminder.time.minute,
+      ),
+    );
+  }
+
+  /// What a notification tap asked for (e.g. "openGoals"), or null. Reading clears it.
+  Future<String?> consumePendingAction() => _api.consumePendingAction();
 
   static List<Goal> _goals(List<NativeGoal> goals) => goals
       .map((goal) => Goal(id: goal.id, text: goal.text, done: goal.done))
