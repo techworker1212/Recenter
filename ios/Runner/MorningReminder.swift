@@ -1,5 +1,8 @@
 import Foundation
 import UserNotifications
+import os
+
+private let log = Logger(subsystem: "com.aquibkhan.recenter", category: "MorningReminder")
 
 /// The daily "what will you focus on today?" notification. It's a repeating calendar
 /// notification on the phone itself: no server, and it follows the phone's timezone.
@@ -58,12 +61,24 @@ enum MorningReminder {
     content.body = "What will you focus on today instead of scrolling?"
     content.sound = .default
     content.categoryIdentifier = categoryId
+    // The user asked for this at a set time, and 6 AM often falls inside a Sleep Focus or a
+    // Scheduled Summary, which would otherwise hold it back without any sign.
+    content.interruptionLevel = .timeSensitive
 
     let trigger = UNCalendarNotificationTrigger(
       dateMatching: DateComponents(hour: current.hour, minute: current.minute),
       repeats: true
     )
-    center.add(UNNotificationRequest(identifier: requestId, content: content, trigger: trigger))
+    center.add(UNNotificationRequest(identifier: requestId, content: content, trigger: trigger)) {
+      error in
+      center.getPendingNotificationRequests { requests in
+        let next = requests.first { $0.identifier == requestId }?.trigger
+          as? UNCalendarNotificationTrigger
+        log.notice(
+          "scheduled \(current.hour):\(current.minute) error=\(String(describing: error)) pending=\(requests.count) next=\(String(describing: next?.nextTriggerDate()))"
+        )
+      }
+    }
   }
 
   private enum Keys {

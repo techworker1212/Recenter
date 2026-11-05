@@ -100,6 +100,10 @@ class MainActivity : FlutterActivity() {
         ) = this@MainActivity.requestPermission(kind, callback)
 
         override fun upsertAppRule(rule: NativeAppRule) {
+            val previous = store.rule(rule.id)
+            if (previous != null && rule.limitMinutes > previous.limitMinutes) {
+                store.liftBlock(rule.id)
+            }
             store.upsert(
                 StoredRule(
                     id = rule.id,

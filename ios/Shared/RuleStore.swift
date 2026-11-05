@@ -130,6 +130,19 @@ final class RuleStore {
     return now < until.addingTimeInterval(-15)
   }
 
+  /// The rule's limit was reached today, so raising the limit should grant only the difference.
+  func markLimitReached(_ ruleId: String) {
+    defaults.set(Self.today(), forKey: Keys.limitReachedDay + ruleId)
+  }
+
+  func limitReachedToday(_ ruleId: String) -> Bool {
+    defaults.string(forKey: Keys.limitReachedDay + ruleId) == Self.today()
+  }
+
+  func clearLimitReached(_ ruleId: String) {
+    defaults.removeObject(forKey: Keys.limitReachedDay + ruleId)
+  }
+
   /// Recenter is about to stop and restart this rule's monitor. iOS reports that stop as
   /// "interval ended", which must not be mistaken for the real end of a window.
   func markRearming(_ ruleId: String) {
@@ -177,5 +190,6 @@ final class RuleStore {
     static let interruptionDay = "interruptionDay"
     static let unlockedUntil = "unlockedUntil."
     static let rearmingAt = "rearmingAt."
+    static let limitReachedDay = "limitReachedDay."
   }
 }

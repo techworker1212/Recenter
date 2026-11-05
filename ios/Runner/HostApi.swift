@@ -52,13 +52,10 @@ final class HostApi: RecenterHostApi {
       enabled: rule.enabled,
       selection: selection
     )
+    let previous = store.rule(id: stored.id)
     store.upsert(stored)
     guard store.monitoring else { return }
-    if stored.enabled {
-      try RuleScheduler.arm(stored, thresholdMinutes: stored.limitMinutes, startingNow: true)
-    } else {
-      RuleScheduler.disarm(stored.id)
-    }
+    try RuleScheduler.apply(edited: stored, previous: previous, store: store)
   }
 
   func deleteAppRule(id: String) throws {

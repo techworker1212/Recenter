@@ -105,6 +105,14 @@ class RuleStore(context: Context) {
             .apply()
     }
 
+    /** The limit was raised: lift the block without starting an unlock period. */
+    fun liftBlock(ruleId: String) {
+        prefs.edit()
+            .putStringSet(KEY_BLOCKED, blockedRuleIds() - ruleId)
+            .remove(cooldownKey(ruleId))
+            .apply()
+    }
+
     /** Today's interruptions per rule id. Counts from earlier days read as empty. */
     fun interruptionsByRule(): Map<String, Int> {
         if (prefs.getString(KEY_INTERRUPTION_DAY, null) != today()) return emptyMap()

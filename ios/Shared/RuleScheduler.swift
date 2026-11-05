@@ -38,8 +38,38 @@ enum RuleScheduler {
     try center.startMonitoring(name, during: schedule, events: [limitEvent: event])
   }
 
+  /// Applies a saved edit to a rule while monitoring is on. Only a change that affects the
+  /// limit touches the running count, so editing a message can't hand out a fresh limit.
+  static func apply(
+    edited rule: StoredRule, previous: StoredRule?, store: RuleStore = .shared
+  ) throws {
+    guard rule.enabled else {
+      disarm(rule.id)
+      return
+    }
+    let isRunning = DeviceActivityCenter().activities.contains(activityName(rule.id))
+    let unchangedRule = previous?.enabled == true && previous?.selection == rule.selection
+    guard unchangedRule, isRunning, let previous else {
+      store.clearLimitReached(rule.id)
+      try arm(rule, thresholdMinutes: rule.limitMinutes, startingNow: true)
+      return
+    }
+    if store.limitReachedToday(rule.id) {
+      // Already over the old limit: a higher limit lifts the block and grants the difference.
+      guard rule.limitMinutes > previous.limitMinutes else { return }
+      store.setUnlockedUntil(nil, for: rule.id)
+      clearShield(rule.id)
+      try arm(
+        rule, thresholdMinutes: rule.limitMinutes - previous.limitMinutes, startingNow: true)
+    } else if rule.limitMinutes != previous.limitMinutes {
+      // iOS can't report usage so far, so a changed limit counts from now.
+      try arm(rule, thresholdMinutes: rule.limitMinutes, startingNow: true)
+    }
+  }
+
   static func armAll(store: RuleStore = .shared) throws {
     for rule in store.rules() {
+      store.clearLimitReached(rule.id)
       if rule.enabled {
         try arm(rule, thresholdMinutes: rule.limitMinutes, startingNow: true)
       } else {

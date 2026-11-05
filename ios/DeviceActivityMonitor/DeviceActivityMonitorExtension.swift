@@ -21,6 +21,7 @@ class DeviceActivityMonitorExtension: DeviceActivityMonitor {
       !store.isUnlocked(rule.id)
     else { return }
 
+    store.markLimitReached(rule.id)
     store.recordInterruption(ruleId: rule.id)
     postWarning(for: rule)
     sleep(warningSeconds)
