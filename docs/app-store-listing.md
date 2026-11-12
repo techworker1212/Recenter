@@ -70,3 +70,34 @@ First release of Recenter. Set a time limit and your own reminder for any app, t
 | Support URL | https://techworker1212.github.io/Recenter/support.html |
 | App Privacy answer | "No, we do not collect data from this app" → Data Not Collected |
 | Copyright | © 2026 Techworker |
+
+## App Review Information → Notes (paste into App Store Connect)
+
+Recenter helps people limit their own use of apps they choose. It uses Apple's Screen Time
+frameworks with individual authorization (AuthorizationCenter, .individual). It is not a
+parental-control app and does not manage anyone else's device.
+
+How Screen Time is used:
+- FamilyActivitySelection / FamilyActivityPicker: the user picks the apps to limit.
+- DeviceActivity: one monitor per app rule, with a daily time-limit event.
+- ManagedSettings: when the limit is reached, the app is shielded until the user unlocks it.
+- ShieldConfiguration / ShieldAction extensions: the shield shows the user's own message and
+  offers "Close" or "Unlock for N min".
+- A notification content extension shows today's goals as a checklist in the warning.
+
+Privacy: no account, no server, no analytics or ads. Everything stays on the device in the
+app's App Group storage. App names and icons are drawn by iOS from Screen Time tokens; the app
+never learns them.
+
+How to test (no login needed):
+1. Open Recenter. Allow Screen Time access (requires the device passcode) and notifications.
+2. Tap "Add app", tap "Pick an app" and choose any app, e.g. Safari.
+3. Set "Time limit" to 1 minute, type any notification title and message, and tap Save.
+4. Make sure "Monitoring" is on, then use the chosen app for a little over a minute.
+5. A notification shows your message; about 5 seconds later the app is shielded with the same
+   message. Tap "Unlock for 2 min" to reopen it, or "Close".
+6. Optional: add goals under "Today's goals". They appear on the warning and the shield. Press
+   and hold the warning notification to tick them off.
+7. Optional: the morning reminder can be set to a minute from now under "Morning reminder".
+
+Note: iOS can deliver the limit event up to a minute or so after the limit is reached.

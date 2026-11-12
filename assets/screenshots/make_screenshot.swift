@@ -1,5 +1,6 @@
-// Frames a raw 6.9" iPhone screenshot for the App Store: teal background, headline on top,
-// screenshot below with rounded corners. Output is 1320×2868, opaque.
+// Frames a raw screenshot for the App Store: teal background, headline on top, screenshot
+// below with rounded corners. iPad captures become 2064×2752 (13" iPad), everything else
+// 1320×2868 (6.9" iPhone). Output is opaque.
 // Usage: swift assets/screenshots/make_screenshot.swift <raw.png> <out.png> "<headline>"
 import AppKit
 
@@ -12,14 +13,19 @@ guard args.count == 4 else {
 let (input, output) = (args[1], args[2])
 let headline = args[3].replacingOccurrences(of: "\\n", with: "\n")
 
-let width = 1320
-let height = 2868
 let teal = NSColor(srgbRed: 15 / 255, green: 118 / 255, blue: 110 / 255, alpha: 1)
 
-guard let shot = NSImage(contentsOfFile: input) else {
+guard let shot = NSImage(contentsOfFile: input),
+  let pixels = shot.representations.first?.pixelsWide
+else {
   print("can't read \(input)")
   exit(1)
 }
+let isPad = pixels >= 2000
+let width = isPad ? 2064 : 1320
+let height = isPad ? 2752 : 2868
+// Sizes below were tuned on the iPhone canvas; scale them to this one.
+let unit = CGFloat(width) / 1320 * (isPad ? 0.8 : 1)
 
 // Opaque RGB canvas (App Store screenshots must not have transparency).
 let cg = CGContext(
@@ -37,7 +43,7 @@ let paragraph = NSMutableParagraphStyle()
 paragraph.alignment = .center
 paragraph.lineSpacing = 8
 let attributes: [NSAttributedString.Key: Any] = [
-  .font: NSFont.systemFont(ofSize: 104, weight: .bold),
+  .font: NSFont.systemFont(ofSize: 104 * unit, weight: .bold),
   .foregroundColor: NSColor.white,
   .paragraphStyle: paragraph,
 ]
@@ -57,7 +63,7 @@ let shotWidth = CGFloat(width) * scale
 let shotHeight = CGFloat(height) * scale
 let shotRect = NSRect(
   x: (CGFloat(width) - shotWidth) / 2, y: 110, width: shotWidth, height: shotHeight)
-let corner: CGFloat = 96
+let corner: CGFloat = isPad ? 64 : 96
 let frame = NSBezierPath(roundedRect: shotRect.insetBy(dx: -14, dy: -14), xRadius: corner + 14, yRadius: corner + 14)
 NSColor(srgbRed: 8 / 255, green: 80 / 255, blue: 65 / 255, alpha: 1).setFill()
 frame.fill()
