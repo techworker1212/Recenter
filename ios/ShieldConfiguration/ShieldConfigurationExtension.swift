@@ -7,14 +7,16 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
   private let store = RuleStore.shared
 
   override func configuration(shielding application: Application) -> ShieldConfiguration {
-    make(store.rule(application: application.token))
+    make(store.rule(application: application.token), name: application.localizedDisplayName)
   }
 
   override func configuration(
     shielding application: Application,
     in category: ActivityCategory
   ) -> ShieldConfiguration {
-    make(store.rule(application: application.token) ?? store.rule(category: category.token))
+    make(
+      store.rule(application: application.token) ?? store.rule(category: category.token),
+      name: application.localizedDisplayName)
   }
 
   override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {
@@ -34,12 +36,13 @@ class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     return "\(message)\n\n\(goals)"
   }
 
-  private func make(_ rule: StoredRule?) -> ShieldConfiguration {
+  /// `name` is the real app name iOS gives the shield; the rule's label is only a fallback.
+  private func make(_ rule: StoredRule?, name: String? = nil) -> ShieldConfiguration {
     // Mirrors AppRule.fallbackTitle / fallbackBody in Dart.
     let fallbackTitle = "Time to recenter."
     let fallbackBody = "You've reached the limit you set for this app."
     let teal = UIColor(red: 15 / 255, green: 118 / 255, blue: 110 / 255, alpha: 1)
-    let label = rule?.label ?? "app"
+    let label = name ?? rule?.label ?? "app"
     return ShieldConfiguration(
       backgroundBlurStyle: .systemUltraThinMaterialDark,
       backgroundColor: UIColor(red: 28 / 255, green: 28 / 255, blue: 30 / 255, alpha: 0.9),

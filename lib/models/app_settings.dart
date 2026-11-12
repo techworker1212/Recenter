@@ -37,7 +37,8 @@ class AppSettings {
     return AppSettings(
       onboardingComplete: json['onboardingComplete'] as bool? ?? false,
       monitoringEnabled: json['monitoringEnabled'] as bool? ?? false,
-      themeMode: ThemeMode.values.asNameMap()[json['themeMode']] ?? ThemeMode.system,
+      themeMode:
+          ThemeMode.values.asNameMap()[json['themeMode']] ?? ThemeMode.system,
     );
   }
 }

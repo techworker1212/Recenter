@@ -2,14 +2,11 @@ import 'package:flutter/material.dart';
 
 import '../models/app_rule.dart';
 import '../state/app_controller.dart';
+import '../widgets/app_label.dart';
 import '../widgets/warning_preview.dart';
 
 class RuleEditorScreen extends StatefulWidget {
-  const RuleEditorScreen({
-    super.key,
-    required this.controller,
-    this.existing,
-  });
+  const RuleEditorScreen({super.key, required this.controller, this.existing});
 
   final AppController controller;
   final AppRule? existing;
@@ -19,7 +16,6 @@ class RuleEditorScreen extends StatefulWidget {
 }
 
 class _RuleEditorScreenState extends State<RuleEditorScreen> {
-  late final TextEditingController _label;
   late final TextEditingController _title;
   late final TextEditingController _body;
   late int _limit;
@@ -42,14 +38,12 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
   void initState() {
     super.initState();
     final existing = widget.existing;
-    _label = TextEditingController(text: existing?.displayLabel ?? '');
     _title = TextEditingController(text: existing?.notificationTitle ?? '');
     _body = TextEditingController(text: existing?.notificationBody ?? '');
     _limit = existing?.limitMinutes ?? AppRule.defaultLimitMinutes;
     _unlock = existing?.unlockMinutes ?? AppRule.defaultUnlockMinutes;
     _platformAppId = existing?.platformAppId ?? '';
     _pickedLabel = existing?.displayLabel;
-    _label.addListener(_rebuild);
     _title.addListener(_rebuild);
     _body.addListener(_rebuild);
     _loadInstalled();
@@ -75,13 +69,10 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
   AppRule get _draft {
     final existing = widget.existing;
     return AppRule(
-      id:
-          existing?.id ??
-          'rule_${DateTime.now().microsecondsSinceEpoch}',
+      id: existing?.id ?? 'rule_${DateTime.now().microsecondsSinceEpoch}',
       platformAppId: _platformAppId,
-      displayLabel: _label.text.trim().isEmpty
-          ? (_pickedLabel ?? 'App')
-          : _label.text.trim(),
+      // iOS draws the real name from the selection; this is only a fallback there.
+      displayLabel: _pickedLabel ?? 'App',
       limitMinutes: _limit,
       unlockMinutes: _unlock,
       notificationTitle: _title.text,
@@ -99,18 +90,9 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
   }
 
   Future<void> _save() async {
-    if (_label.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Add a label. iOS cannot reveal the real app name.'),
-        ),
-      );
-      return;
-    }
     if (_platformAppId.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pick an app first.')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Pick an app first.')));
       return;
     }
     final failure = await widget.controller.upsertRule(_draft);
@@ -118,9 +100,8 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
       return;
     }
     if (failure != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(failure)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(failure)));
       return;
     }
     Navigator.of(context).pop();
@@ -128,7 +109,6 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
 
   @override
   void dispose() {
-    _label.dispose();
     _title.dispose();
     _body.dispose();
     super.dispose();
@@ -140,24 +120,31 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.existing == null ? 'Add app' : 'Edit app'),
-        actions: [
-          TextButton(onPressed: _save, child: const Text('Save')),
-        ],
+        actions: [TextButton(onPressed: _save, child: const Text('Save'))],
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           if (ios) ...[
-            FilledButton.tonal(
-              onPressed: _pickIos,
-              child: Text(
-                _platformAppId.isEmpty ? 'Pick app' : 'App selected — pick again',
+            if (_platformAppId.isEmpty)
+              FilledButton.tonal(
+                onPressed: _pickIos,
+                child: const Text('Pick an app'),
+              )
+            else
+              Card(
+                child: ListTile(
+                  title: AppLabel(
+                    selection: _platformAppId,
+                    fallback: _pickedLabel ?? 'App',
+                  ),
+                  trailing: TextButton(
+                    onPressed: _pickIos,
+                    child: const Text('Change'),
+                  ),
+                  onTap: _pickIos,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Apple does not tell Recenter the app’s real name. Type a label such as Instagram.',
-            ),
           ] else ...[
             Text('Presets', style: Theme.of(context).textTheme.titleSmall),
             Wrap(
@@ -171,9 +158,6 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
                         setState(() {
                           _platformAppId = preset.id;
                           _pickedLabel = preset.label;
-                          if (_label.text.isEmpty) {
-                            _label.text = preset.label;
-                          }
                         });
                       },
                     ),
@@ -191,10 +175,8 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
               ),
               items: _installed
                   .map(
-                    (app) => DropdownMenuItem(
-                      value: app.id,
-                      child: Text(app.label),
-                    ),
+                    (app) =>
+                        DropdownMenuItem(value: app.id, child: Text(app.label)),
                   )
                   .toList(),
               onChanged: (value) {
@@ -205,21 +187,10 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
                 setState(() {
                   _platformAppId = value;
                   _pickedLabel = match.label;
-                  if (_label.text.isEmpty) {
-                    _label.text = match.label;
-                  }
                 });
               },
             ),
           ],
-          const SizedBox(height: 16),
-          TextField(
-            controller: _label,
-            decoration: const InputDecoration(
-              labelText: 'Label',
-              border: OutlineInputBorder(),
-            ),
-          ),
           const SizedBox(height: 16),
           Text('Time limit: $_limit minutes'),
           Slider(
@@ -260,8 +231,7 @@ class _RuleEditorScreenState extends State<RuleEditorScreen> {
             maxLines: 3,
             decoration: const InputDecoration(
               labelText: 'Notification body',
-              hintText:
-                  'You said you’d stop after 10 minutes. Unlock only if you still need it.',
+              hintText: 'You said you’d stop after 10 minutes. Unlock only if you still need it.',
               border: OutlineInputBorder(),
             ),
           ),

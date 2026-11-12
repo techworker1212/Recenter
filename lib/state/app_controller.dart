@@ -93,11 +93,14 @@ class AppController extends ChangeNotifier {
     _midnight?.cancel();
     final now = DateTime.now();
     final midnight = DateTime(now.year, now.month, now.day + 1);
-    _midnight = Timer(midnight.difference(now) + const Duration(seconds: 1), () async {
-      await refreshNative();
-      notifyListeners();
-      _scheduleMidnightRefresh();
-    });
+    _midnight = Timer(
+      midnight.difference(now) + const Duration(seconds: 1),
+      () async {
+        await refreshNative();
+        notifyListeners();
+        _scheduleMidnightRefresh();
+      },
+    );
   }
 
   Future<void> setMorningReminder(MorningReminder reminder) async {
@@ -260,12 +263,14 @@ class AppController extends ChangeNotifier {
     await _store.saveSettings(settings);
   }
 
-  Future<void> addGoal(String text) => _updateGoals(() => _bridge.addGoal(text));
+  Future<void> addGoal(String text) =>
+      _updateGoals(() => _bridge.addGoal(text));
 
   Future<void> setGoalDone(Goal goal, bool done) =>
       _updateGoals(() => _bridge.setGoalDone(goal.id, done));
 
-  Future<void> deleteGoal(Goal goal) => _updateGoals(() => _bridge.deleteGoal(goal.id));
+  Future<void> deleteGoal(Goal goal) =>
+      _updateGoals(() => _bridge.deleteGoal(goal.id));
 
   Future<void> _updateGoals(Future<List<Goal>> Function() change) async {
     try {

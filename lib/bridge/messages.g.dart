@@ -10,9 +10,9 @@ import 'package:flutter/services.dart';
 import 'package:meta/meta.dart' show immutable, protected, visibleForTesting;
 
 Object? _extractReplyValueOrThrow(
-    List<Object?>? replyList,
-    String channelName, {
-    required bool isNullValid,
+  List<Object?>? replyList,
+  String channelName, {
+  required bool isNullValid,
 }) {
   if (replyList == null) {
     throw PlatformException(
@@ -46,8 +46,9 @@ bool _deepEquals(Object? a, Object? b) {
   }
   if (a is List && b is List) {
     return a.length == b.length &&
-        a.indexed
-            .every(((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]));
+        a.indexed.every(
+          ((int, dynamic) item) => _deepEquals(item.$2, b[item.$1]),
+        );
   }
   if (a is Map && b is Map) {
     if (a.length != b.length) {
@@ -96,7 +97,6 @@ int _deepHash(Object? value) {
   return value.hashCode;
 }
 
-
 class NativeAppRule {
   NativeAppRule({
     required this.id,
@@ -139,7 +139,8 @@ class NativeAppRule {
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static NativeAppRule decode(Object result) {
     result as List<Object?>;
@@ -164,7 +165,14 @@ class NativeAppRule {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(id, other.id) && _deepEquals(platformAppId, other.platformAppId) && _deepEquals(displayLabel, other.displayLabel) && _deepEquals(limitMinutes, other.limitMinutes) && _deepEquals(unlockMinutes, other.unlockMinutes) && _deepEquals(notificationTitle, other.notificationTitle) && _deepEquals(notificationBody, other.notificationBody) && _deepEquals(enabled, other.enabled);
+    return _deepEquals(id, other.id) &&
+        _deepEquals(platformAppId, other.platformAppId) &&
+        _deepEquals(displayLabel, other.displayLabel) &&
+        _deepEquals(limitMinutes, other.limitMinutes) &&
+        _deepEquals(unlockMinutes, other.unlockMinutes) &&
+        _deepEquals(notificationTitle, other.notificationTitle) &&
+        _deepEquals(notificationBody, other.notificationBody) &&
+        _deepEquals(enabled, other.enabled);
   }
 
   @override
@@ -202,7 +210,8 @@ class PermissionSnapshot {
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static PermissionSnapshot decode(Object result) {
     result as List<Object?>;
@@ -224,7 +233,11 @@ class PermissionSnapshot {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(familyControls, other.familyControls) && _deepEquals(notifications, other.notifications) && _deepEquals(usageAccess, other.usageAccess) && _deepEquals(overlay, other.overlay) && _deepEquals(batteryExemption, other.batteryExemption);
+    return _deepEquals(familyControls, other.familyControls) &&
+        _deepEquals(notifications, other.notifications) &&
+        _deepEquals(usageAccess, other.usageAccess) &&
+        _deepEquals(overlay, other.overlay) &&
+        _deepEquals(batteryExemption, other.batteryExemption);
   }
 
   @override
@@ -233,24 +246,19 @@ class PermissionSnapshot {
 }
 
 class InstalledApp {
-  InstalledApp({
-    required this.packageId,
-    required this.label,
-  });
+  InstalledApp({required this.packageId, required this.label});
 
   String packageId;
 
   String label;
 
   List<Object?> _toList() {
-    return <Object?>[
-      packageId,
-      label,
-    ];
+    return <Object?>[packageId, label];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static InstalledApp decode(Object result) {
     result as List<Object?>;
@@ -269,7 +277,8 @@ class InstalledApp {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(packageId, other.packageId) && _deepEquals(label, other.label);
+    return _deepEquals(packageId, other.packageId) &&
+        _deepEquals(label, other.label);
   }
 
   @override
@@ -292,22 +301,20 @@ class MonitoringStatus {
   Map<String, int> interruptionsByRule;
 
   List<Object?> _toList() {
-    return <Object?>[
-      running,
-      interruptionsToday,
-      interruptionsByRule,
-    ];
+    return <Object?>[running, interruptionsToday, interruptionsByRule];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static MonitoringStatus decode(Object result) {
     result as List<Object?>;
     return MonitoringStatus(
       running: result[0]! as bool,
       interruptionsToday: result[1]! as int,
-      interruptionsByRule: (result[2]! as Map<Object?, Object?>).cast<String, int>(),
+      interruptionsByRule: (result[2]! as Map<Object?, Object?>)
+          .cast<String, int>(),
     );
   }
 
@@ -320,7 +327,9 @@ class MonitoringStatus {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(running, other.running) && _deepEquals(interruptionsToday, other.interruptionsToday) && _deepEquals(interruptionsByRule, other.interruptionsByRule);
+    return _deepEquals(running, other.running) &&
+        _deepEquals(interruptionsToday, other.interruptionsToday) &&
+        _deepEquals(interruptionsByRule, other.interruptionsByRule);
   }
 
   @override
@@ -331,11 +340,7 @@ class MonitoringStatus {
 /// A goal for today. Goals live natively so notification actions can tick them off
 /// while Flutter isn't running.
 class NativeGoal {
-  NativeGoal({
-    required this.id,
-    required this.text,
-    required this.done,
-  });
+  NativeGoal({required this.id, required this.text, required this.done});
 
   String id;
 
@@ -344,15 +349,12 @@ class NativeGoal {
   bool done;
 
   List<Object?> _toList() {
-    return <Object?>[
-      id,
-      text,
-      done,
-    ];
+    return <Object?>[id, text, done];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static NativeGoal decode(Object result) {
     result as List<Object?>;
@@ -372,7 +374,9 @@ class NativeGoal {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(id, other.id) && _deepEquals(text, other.text) && _deepEquals(done, other.done);
+    return _deepEquals(id, other.id) &&
+        _deepEquals(text, other.text) &&
+        _deepEquals(done, other.done);
   }
 
   @override
@@ -396,15 +400,12 @@ class MorningReminderSettings {
   int minute;
 
   List<Object?> _toList() {
-    return <Object?>[
-      enabled,
-      hour,
-      minute,
-    ];
+    return <Object?>[enabled, hour, minute];
   }
 
   Object encode() {
-    return _toList();  }
+    return _toList();
+  }
 
   static MorningReminderSettings decode(Object result) {
     result as List<Object?>;
@@ -424,14 +425,15 @@ class MorningReminderSettings {
     if (identical(this, other)) {
       return true;
     }
-    return _deepEquals(enabled, other.enabled) && _deepEquals(hour, other.hour) && _deepEquals(minute, other.minute);
+    return _deepEquals(enabled, other.enabled) &&
+        _deepEquals(hour, other.hour) &&
+        _deepEquals(minute, other.minute);
   }
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => _deepHash(<Object?>[runtimeType, ..._toList()]);
 }
-
 
 class _PigeonCodec extends StandardMessageCodec {
   const _PigeonCodec();
@@ -440,22 +442,22 @@ class _PigeonCodec extends StandardMessageCodec {
     if (value is int) {
       buffer.putUint8(4);
       buffer.putInt64(value);
-    }    else if (value is NativeAppRule) {
+    } else if (value is NativeAppRule) {
       buffer.putUint8(129);
       writeValue(buffer, value.encode());
-    }    else if (value is PermissionSnapshot) {
+    } else if (value is PermissionSnapshot) {
       buffer.putUint8(130);
       writeValue(buffer, value.encode());
-    }    else if (value is InstalledApp) {
+    } else if (value is InstalledApp) {
       buffer.putUint8(131);
       writeValue(buffer, value.encode());
-    }    else if (value is MonitoringStatus) {
+    } else if (value is MonitoringStatus) {
       buffer.putUint8(132);
       writeValue(buffer, value.encode());
-    }    else if (value is NativeGoal) {
+    } else if (value is NativeGoal) {
       buffer.putUint8(133);
       writeValue(buffer, value.encode());
-    }    else if (value is MorningReminderSettings) {
+    } else if (value is MorningReminderSettings) {
       buffer.putUint8(134);
       writeValue(buffer, value.encode());
     } else {
@@ -488,9 +490,13 @@ class RecenterHostApi {
   /// Constructor for [RecenterHostApi].  The [binaryMessenger] named argument is
   /// available for dependency injection.  If it is left null, the default
   /// BinaryMessenger will be used which routes to the host platform.
-  RecenterHostApi({BinaryMessenger? binaryMessenger, String messageChannelSuffix = ''})
-      : pigeonVar_binaryMessenger = binaryMessenger,
-        pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+  RecenterHostApi({
+    BinaryMessenger? binaryMessenger,
+    String messageChannelSuffix = '',
+  }) : pigeonVar_binaryMessenger = binaryMessenger,
+       pigeonVar_messageChannelSuffix = messageChannelSuffix.isNotEmpty
+           ? '.$messageChannelSuffix'
+           : '';
   final BinaryMessenger? pigeonVar_binaryMessenger;
 
   static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
@@ -500,7 +506,8 @@ class RecenterHostApi {
   /// Async because iOS reports notification and Screen Time status asynchronously; a
   /// synchronous read right after launch can wrongly say "not allowed".
   Future<PermissionSnapshot> getPermissionStatus() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.getPermissionStatus$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.getPermissionStatus$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -510,71 +517,77 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as PermissionSnapshot;
   }
 
   Future<PermissionSnapshot> requestPermission(String kind) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.requestPermission$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.requestPermission$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[kind]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[kind],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as PermissionSnapshot;
   }
 
   Future<void> upsertAppRule(NativeAppRule rule) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.upsertAppRule$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.upsertAppRule$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[rule]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[rule],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   Future<void> deleteAppRule(String id) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.deleteAppRule$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.deleteAppRule$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[id]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[id],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   Future<void> startMonitoring() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.startMonitoring$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.startMonitoring$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -584,15 +597,15 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   Future<void> stopMonitoring() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.stopMonitoring$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.stopMonitoring$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -602,15 +615,15 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   Future<MonitoringStatus> getMonitoringStatus() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.getMonitoringStatus$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.getMonitoringStatus$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -620,16 +633,16 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as MonitoringStatus;
   }
 
   Future<List<InstalledApp>> listInstalledApps() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.listInstalledApps$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.listInstalledApps$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -639,16 +652,16 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return (pigeonVar_replyValue! as List<Object?>).cast<InstalledApp>();
   }
 
   Future<String> pickIosActivity() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.pickIosActivity$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.pickIosActivity$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -658,35 +671,37 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as String;
   }
 
   Future<void> unlockApp(String ruleId) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.unlockApp$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.unlockApp$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[ruleId]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[ruleId],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   /// Today's goals. A new day starts with an empty list.
   Future<List<NativeGoal>> getGoals() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.getGoals$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.getGoals$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -696,73 +711,79 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
   }
 
   Future<List<NativeGoal>> addGoal(String text) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.addGoal$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.addGoal$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[text]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[text],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
   }
 
   Future<List<NativeGoal>> setGoalDone(String id, bool done) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.setGoalDone$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.setGoalDone$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[id, done]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[id, done],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
   }
 
   Future<List<NativeGoal>> deleteGoal(String id) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.deleteGoal$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.deleteGoal$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[id]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[id],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return (pigeonVar_replyValue! as List<Object?>).cast<NativeGoal>();
   }
 
   Future<MorningReminderSettings> getMorningReminder() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.getMorningReminder$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.getMorningReminder$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -772,36 +793,38 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: false,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: false,
+    );
     return pigeonVar_replyValue! as MorningReminderSettings;
   }
 
   Future<void> setMorningReminder(MorningReminderSettings settings) async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.setMorningReminder$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.setMorningReminder$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[settings]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(
+      <Object?>[settings],
+    );
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
   }
 
   /// Something a notification tap asked the app to do once it opens ("openGoals"), or null.
   /// Reading it clears it.
   Future<String?> consumePendingAction() async {
-    final pigeonVar_channelName = 'dev.flutter.pigeon.re_think.RecenterHostApi.consumePendingAction$pigeonVar_messageChannelSuffix';
+    final pigeonVar_channelName =
+        'dev.flutter.pigeon.re_think.RecenterHostApi.consumePendingAction$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
@@ -811,11 +834,10 @@ class RecenterHostApi {
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
-        pigeonVar_replyList,
-        pigeonVar_channelName,
-        isNullValid: true,
-    )
-    ;
+      pigeonVar_replyList,
+      pigeonVar_channelName,
+      isNullValid: true,
+    );
     return pigeonVar_replyValue as String?;
   }
 }

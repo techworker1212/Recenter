@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/app_rule.dart';
 import '../screens/rule_editor_screen.dart';
 import '../state/app_controller.dart';
+import '../widgets/app_label.dart';
 import '../widgets/goals_section.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -83,8 +84,16 @@ class HomeScreen extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Remove ${rule.displayLabel}?'),
-        content: const Text('Its limit and reminder will be deleted.'),
+        title: const Text('Remove this app?'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppLabel.forRule(rule),
+            const SizedBox(height: 12),
+            const Text('Its limit and reminder will be deleted.'),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -138,18 +147,11 @@ class _InterruptionsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final labels = {
-      for (final rule in controller.rules) rule.id: rule.displayLabel,
-    };
+    final rules = {for (final rule in controller.rules) rule.id: rule};
     final perApp =
         controller.interruptionsByRule.entries
             .where((entry) => entry.value > 0)
-            .map(
-              (entry) => (
-                label: labels[entry.key] ?? 'Removed app',
-                count: entry.value,
-              ),
-            )
+            .map((entry) => (rule: rules[entry.key], count: entry.value))
             .toList()
           ..sort((a, b) => b.count.compareTo(a.count));
 
@@ -172,7 +174,13 @@ class _InterruptionsCard extends StatelessWidget {
                 for (final app in perApp)
                   ListTile(
                     dense: true,
-                    title: Text(app.label),
+                    title: app.rule == null
+                        ? const Text('Removed app')
+                        : AppLabel.forRule(
+                            app.rule!,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            height: 24,
+                          ),
                     trailing: Text(
                       '${app.count}',
                       style: Theme.of(context).textTheme.titleMedium,
@@ -254,7 +262,7 @@ class _RuleTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        title: Text(rule.displayLabel),
+        title: AppLabel.forRule(rule),
         subtitle: Text(
           '${rule.limitMinutes} min a day\n“${rule.resolvedTitle}”',
           maxLines: 2,

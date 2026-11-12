@@ -61,5 +61,8 @@ import UserNotifications
     if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "RecenterHostApi") {
       RecenterHostApiSetup.setUp(binaryMessenger: registrar.messenger(), api: hostApi)
     }
+    if let registrar = engineBridge.pluginRegistry.registrar(forPlugin: "RecenterAppLabel") {
+      registrar.register(AppLabelViewFactory(), withId: AppLabelViewFactory.viewType)
+    }
   }
 }

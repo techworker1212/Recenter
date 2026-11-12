@@ -26,7 +26,6 @@ class DemoBridge extends NativeBridge {
   @override
   Future<PermissionSnapshot> status() async => _granted;
 
-
   @override
   Future<PermissionSnapshot> request(String kind) async => _granted;
 
@@ -43,12 +42,11 @@ class DemoBridge extends NativeBridge {
   Future<void> stop() async {}
 
   @override
-  Future<MonitoringStatus> monitoring() async =>
-      MonitoringStatus(
-        running: true,
-        interruptionsToday: 3,
-        interruptionsByRule: {'demo_instagram': 2, 'demo_tiktok': 1},
-      );
+  Future<MonitoringStatus> monitoring() async => MonitoringStatus(
+    running: true,
+    interruptionsToday: 3,
+    interruptionsByRule: {'demo_instagram': 2, 'demo_tiktok': 1},
+  );
 
   @override
   Future<List<ListedApp>> installedApps() async => const [];
@@ -65,7 +63,8 @@ class DemoBridge extends NativeBridge {
   Future<MorningReminder> morningReminder() async => _reminder;
 
   @override
-  Future<void> setMorningReminder(MorningReminder reminder) async => _reminder = reminder;
+  Future<void> setMorningReminder(MorningReminder reminder) async =>
+      _reminder = reminder;
 
   @override
   Future<String?> consumePendingAction() async => null;

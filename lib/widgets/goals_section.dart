@@ -102,7 +102,8 @@ class _GoalsSectionState extends State<GoalsSection> {
         Card(
           child: Column(
             children: [
-              for (final goal in goals) _GoalTile(goal: goal, controller: widget.controller),
+              for (final goal in goals)
+                _GoalTile(goal: goal, controller: widget.controller),
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 4, 4, 4),
                 child: Row(
@@ -152,7 +153,9 @@ class _MorningReminderTile extends StatelessWidget {
       helpText: 'Morning reminder',
     );
     if (time != null) {
-      await controller.setMorningReminder(reminder.copyWith(time: time, enabled: true));
+      await controller.setMorningReminder(
+        reminder.copyWith(time: time, enabled: true),
+      );
     }
   }
 
@@ -171,8 +174,9 @@ class _MorningReminderTile extends StatelessWidget {
         onTap: () => _pickTime(context),
         trailing: Switch(
           value: reminder.enabled,
-          onChanged: (enabled) =>
-              controller.setMorningReminder(reminder.copyWith(enabled: enabled)),
+          onChanged: (enabled) => controller.setMorningReminder(
+            reminder.copyWith(enabled: enabled),
+          ),
         ),
       ),
     );

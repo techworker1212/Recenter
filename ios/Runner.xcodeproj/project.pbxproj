@@ -41,6 +41,7 @@
 		7094594AB946870D343C741B /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = F23159B91277DAEB99F217AC /* Goals.swift */; };
 		E4C7E4C25E57B947CAFB2206 /* GoalsNotification.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2A9CA52E9C3D91391E7C0910 /* GoalsNotification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		86749D7F62EC6A907FC0CFD6 /* MorningReminder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C043F4B2E69E9BF3D60D5B3C /* MorningReminder.swift */; };
+		002B67FAB7E686ED507745E7 /* AppLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63A31A89F481D6FC3C77BC39 /* AppLabelView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -150,6 +151,7 @@
 		51BE517AF7B83A0568356E52 /* GoalsNotification.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GoalsNotification.entitlements; sourceTree = "<group>"; };
 		2A9CA52E9C3D91391E7C0910 /* GoalsNotification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = GoalsNotification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C043F4B2E69E9BF3D60D5B3C /* MorningReminder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningReminder.swift; sourceTree = "<group>"; };
+		63A31A89F481D6FC3C77BC39 /* AppLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLabelView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,6 +259,7 @@
 				0179F6B56FAA9D8FBC184976 /* ActivityPicker.swift */,
 				FC374BDCF54D70FF562F9AF6 /* Runner.entitlements */,
 				C043F4B2E69E9BF3D60D5B3C /* MorningReminder.swift */,
+				63A31A89F481D6FC3C77BC39 /* AppLabelView.swift */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -579,6 +582,7 @@
 				ED41DB2035A6525A90CFD917 /* RuleScheduler.swift in Sources */,
 				E4CFF2B187944CF7A3343CB5 /* Goals.swift in Sources */,
 				86749D7F62EC6A907FC0CFD6 /* MorningReminder.swift in Sources */,
+				002B67FAB7E686ED507745E7 /* AppLabelView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -64,7 +64,8 @@ class NativeBridge {
 
   Future<List<Goal>> goals() async => _goals(await _api.getGoals());
 
-  Future<List<Goal>> addGoal(String text) async => _goals(await _api.addGoal(text));
+  Future<List<Goal>> addGoal(String text) async =>
+      _goals(await _api.addGoal(text));
 
   Future<List<Goal>> setGoalDone(String id, bool done) async =>
       _goals(await _api.setGoalDone(id, done));
